@@ -1,0 +1,117 @@
+﻿@model IEnumerable<StoreRopa.Models.Persona>
+@{
+    ViewData["Title"] = "Clientes";
+}
+<div class="alert-primary text-center">
+    <h1 class="justify-content-center">@Html.ViewData["Title"]</h1>
+</div>
+
+<div class="row">
+    <div class="Col-mod-12">
+        <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#add-person" data-url="@Url.Action("Create")">
+            Nuevo
+        </button>
+    </div>
+</div>
+<div class="container">
+<div class="table-responsive">
+    <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombres)
+            </th>           
+            <th>
+                @Html.DisplayNameFor(model => model.Curp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaNacimiento)
+            </th>
+           @* <th>
+                @Html.DisplayNameFor(model => model.persona.Ciudad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.persona.Pais)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.persona.Direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.persona.Numero)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.persona.Cp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.persona.Telefono)
+            </th>*@
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombres) @Html.DisplayFor(modelItem => item.ApPaterno) @Html.DisplayFor(modelItem => item.ApMaterno)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Curp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaNacimiento)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.persona.Ciudad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.persona.Pais)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.persona.Direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.persona.Numero)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.persona.Cp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.persona.Telefono)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.persona.Id">Edita</a>
+                @Html.ActionLink("Details", "Details", new { id = item.persona.Id }) |
+                @Html.ActionLink("Edit", "Edit", new { id = item.persona.Id }) |
+                @Html.ActionLink("Status", "Status", new { id = item.persona.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.persona.Id })
+            </td>*@
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+</div>
+<div id="myModal" class="modal " tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header bg-black justify-content-center">
+                <h5 class="modal-title text-white" id="myModalLabel">Registrar Cliente</h5>                
+            </div>
+            <div class="modal-body">
+                <div id="modal-content">
+                    Cargando...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger close" data-dismiss="myModal">Cerrar</button>
+                <button type="button" class="btn btn-primary" data-dismiss="myModal" id="btnSave">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/persona/persona.js"></script>
+}
