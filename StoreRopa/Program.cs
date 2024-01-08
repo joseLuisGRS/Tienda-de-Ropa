@@ -18,6 +18,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+var loggerFactory = app.Services.GetService<ILoggerFactory>();
+loggerFactory.AddFile($@"C:\logs\log.txt");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

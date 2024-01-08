@@ -1,0 +1,95 @@
+﻿@model StoreRopa.Models.Persona
+
+@if(Model != null)
+{
+    <div class="row">
+        <form>
+            <div class="row">
+                <div class="row g-2">
+                    <div class="col-sm-8">
+                        <div class="form-outline">
+                            <label class="control-label">Nombre Completo</label>
+                            <input value="@Model.Nombres @Model.ApPaterno @Model.ApMaterno" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-outline">
+                            <label asp-for="Cliente.Saldo" class="control-label"></label>
+                            <input asp-for="Cliente.Saldo" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Curp" class="control-label"></label>
+                            <input asp-for="Curp" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="FechaNacimiento" class="control-label"></label>
+                            <input asp-for="FechaNacimiento" class="form-control" disabled/>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Telefono" class="control-label"></label>
+                            <input asp-for="Telefono" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Ciudad" class="control-label"></label>
+                            <input asp-for="Ciudad" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Pais" class="control-label"></label>
+                            <input asp-for="Pais" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Cp" class="control-label"></label>
+                            <input asp-for="Cp" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-sm-8">
+                        <div class="form-outline">
+                            <label asp-for="Direccion" class="control-label"></label>
+                            <input asp-for="Direccion" class="form-control" disabled/>
+                        </div>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="form-outline">
+                            <label asp-for="Numero" class="control-label"></label>
+                            <input asp-for="Numero" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Cliente.TipoVenta" class="control-label"></label>
+                            <select asp-for="Cliente.TipoVenta" disabled>
+                                <option value="1">Contado</option>
+                                <option value="2">Crédito</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+}

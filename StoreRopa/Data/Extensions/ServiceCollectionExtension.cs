@@ -15,7 +15,6 @@ namespace StoreRopa.Data.Extensions
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            //services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             return services;
         }
     }
