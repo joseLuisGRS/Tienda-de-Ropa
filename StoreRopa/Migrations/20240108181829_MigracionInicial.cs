@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StoreRopa.Migrations
 {
     /// <inheritdoc />
-    public partial class InitMigrations : Migration
+    public partial class MigracionInicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,8 +22,8 @@ namespace StoreRopa.Migrations
                     ApMaterno = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false, comment: "Apellido materno de la persona"),
                     Curp = table.Column<string>(type: "varchar(18)", unicode: false, maxLength: 18, nullable: false, comment: "Curp (unica) de la persona"),
                     FechaNacimiento = table.Column<DateTime>(type: "datetime", unicode: false, nullable: false, comment: "fecha de nacimiento de la persona"),
-                    Ciudad = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: false, comment: "Ciudad donde vive la persona"),
-                    Pais = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: false, comment: "Pais donde vive la persona"),
+                    Municipio = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: false, comment: "Municipio donde vive la persona"),
+                    Estado = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: false, comment: "Estado donde vive la persona"),
                     Direccion = table.Column<string>(type: "varchar(1000)", unicode: false, maxLength: 1000, nullable: false, comment: "Direccion especifica de la persona"),
                     Numero = table.Column<string>(type: "varchar(10)", unicode: false, maxLength: 10, nullable: false, comment: "Numero donde se situa su ubicación de la persona"),
                     Cp = table.Column<int>(type: "int", unicode: false, nullable: false, comment: "Codigo postal de su ubicación de la persona"),

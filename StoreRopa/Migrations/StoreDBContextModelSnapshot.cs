@@ -115,14 +115,6 @@ namespace StoreRopa.Migrations
                         .HasColumnOrder(3)
                         .HasComment("Apellido paterno de la persona");
 
-                    b.Property<string>("Ciudad")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(500)")
-                        .HasColumnOrder(7)
-                        .HasComment("Ciudad donde vive la persona");
-
                     b.Property<int?>("Cp")
                         .IsRequired()
                         .IsUnicode(false)
@@ -156,6 +148,14 @@ namespace StoreRopa.Migrations
                         .HasColumnOrder(102)
                         .HasComment("Indica si el registro a sido eliminado(eliminado logico)");
 
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnOrder(8)
+                        .HasComment("Estado donde vive la persona");
+
                     b.Property<DateTime>("FechaAlta")
                         .HasColumnType("datetime")
                         .HasColumnOrder(103)
@@ -173,6 +173,14 @@ namespace StoreRopa.Migrations
                         .HasColumnOrder(6)
                         .HasComment("fecha de nacimiento de la persona");
 
+                    b.Property<string>("Municipio")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(500)")
+                        .HasColumnOrder(7)
+                        .HasComment("Municipio donde vive la persona");
+
                     b.Property<string>("Nombres")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -188,14 +196,6 @@ namespace StoreRopa.Migrations
                         .HasColumnType("varchar(20)")
                         .HasColumnOrder(10)
                         .HasComment("Numero donde se situa su ubicación de la persona");
-
-                    b.Property<string>("Pais")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(500)")
-                        .HasColumnOrder(8)
-                        .HasComment("Pais donde vive la persona");
 
                     b.Property<string>("Telefono")
                         .IsRequired()

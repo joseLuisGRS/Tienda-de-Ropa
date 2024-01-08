@@ -21,10 +21,10 @@ namespace StoreRopa.Data.Configuration
                 .HasComment("Curp (unica) de la persona");
             builder.Property(e => e.FechaNacimiento).HasColumnType("datetime").IsUnicode(false)
                .HasComment("fecha de nacimiento de la persona");
-            builder.Property(e => e.Ciudad).HasColumnType("varchar(500)").IsUnicode(false)
-               .HasComment("Ciudad donde vive la persona");
-            builder.Property(e => e.Pais).HasColumnType("varchar(500)").IsUnicode(false)
-               .HasComment("Pais donde vive la persona");
+            builder.Property(e => e.Municipio).HasColumnType("varchar(500)").IsUnicode(false)
+               .HasComment("Municipio donde vive la persona");
+            builder.Property(e => e.Estado).HasColumnType("varchar(500)").IsUnicode(false)
+               .HasComment("Estado donde vive la persona");
             builder.Property(e => e.Direccion).HasColumnType("varchar(1000)").IsUnicode(false)
                .HasComment("Direccion especifica de la persona");
             builder.Property(e => e.Numero).HasColumnType("varchar(20)").IsUnicode(false)
