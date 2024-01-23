@@ -101,7 +101,7 @@
                 <div class="col-sm">
                     <div class="form-outline">
                         <label asp-for="cliente.TipoVenta" class="control-label"></label>
-                        <select asp-for="cliente.TipoVenta" >
+                        <select class="form-select form-select-sm"  asp-for="cliente.TipoVenta">
                             <option value="">Seleccione</option>
                             <option value="1">Contado</option>
                             <option value="2">Crédito</option>
@@ -109,6 +109,8 @@
                         <span asp-validation-for="cliente.TipoVenta" class="text-danger"></span>
                     </div>
                 </div>
+                <div class="col-sm"><div class="form-outline"></div></div>
+                <div class="col-sm"><div class="form-outline"></div></div>
             </div>
 
         </div>

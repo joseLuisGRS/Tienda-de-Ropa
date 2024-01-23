@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "cbIfB1eklOzNd1k2W5c64bwlJrDws150YFStyByd84A=",
+  "Hash": "h82G70rQU1lm2Wof9xKoRX9r7LdCfIkcHSXUKuJODvg=",
   "Source": "StoreRopa",
   "BasePath": "_content/StoreRopa",
   "Mode": "Default",
@@ -102,6 +102,23 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
+      "Identity": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\js\\Empleado\\Empleado.js",
+      "SourceId": "StoreRopa",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\",
+      "BasePath": "_content/StoreRopa",
+      "RelativePath": "js/Empleado/Empleado.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Empleado\\Empleado.js"
+    },
+    {
       "Identity": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\js\\Persona\\Persona.js",
       "SourceId": "StoreRopa",
       "SourceType": "Discovered",
@@ -117,6 +134,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Persona\\Persona.js"
+    },
+    {
+      "Identity": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\js\\Roles\\Roles.js",
+      "SourceId": "StoreRopa",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\",
+      "BasePath": "_content/StoreRopa",
+      "RelativePath": "js/Roles/Roles.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\Roles\\Roles.js"
     },
     {
       "Identity": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\js\\site.js",

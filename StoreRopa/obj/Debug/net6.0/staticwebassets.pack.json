@@ -17,8 +17,16 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\js\\Empleado\\Empleado.js",
+      "PackagePath": "staticwebassets\\js\\Empleado\\Empleado.js"
+    },
+    {
       "Id": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\js\\Persona\\Persona.js",
       "PackagePath": "staticwebassets\\js\\Persona\\Persona.js"
+    },
+    {
+      "Id": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\js\\Roles\\Roles.js",
+      "PackagePath": "staticwebassets\\js\\Roles\\Roles.js"
     },
     {
       "Id": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\js\\site.js",

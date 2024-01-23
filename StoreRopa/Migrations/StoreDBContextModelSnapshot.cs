@@ -89,6 +89,86 @@ namespace StoreRopa.Migrations
                     b.ToTable("Cliente", (string)null);
                 });
 
+            modelBuilder.Entity("StoreRopa.Models.Empleados", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnOrder(1)
+                        .HasComment("Identificador de la tabla");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("EsActivo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasColumnOrder(101)
+                        .HasDefaultValueSql("1")
+                        .HasComment("Indica si el registro se encuentra activo y se puede usar");
+
+                    b.Property<bool>("EsEliminado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasColumnOrder(102)
+                        .HasDefaultValueSql("0")
+                        .HasComment("Indica si el registro a sido eliminado(eliminado logico)");
+
+                    b.Property<DateTime>("FechaAlta")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnOrder(103)
+                        .HasDefaultValueSql("GETDATE()")
+                        .HasComment("Fecha en que se crea el registro");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime")
+                        .HasColumnOrder(105)
+                        .HasComment("Ultima fecha que se actualiza el registro");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnOrder(5)
+                        .HasComment("Clave de acceso");
+
+                    b.Property<long>("PersonaId")
+                        .HasColumnType("bigint")
+                        .HasColumnOrder(2)
+                        .HasComment("Persona");
+
+                    b.Property<long>("RolId")
+                        .HasColumnType("bigint")
+                        .HasColumnOrder(3);
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnOrder(4)
+                        .HasComment("Nombre del usuario");
+
+                    b.Property<string>("UsuarioAlta")
+                        .HasColumnType("varchar(50)")
+                        .HasColumnOrder(104)
+                        .HasComment("Usuario que crea el registro");
+
+                    b.Property<string>("UsuarioModificacion")
+                        .HasColumnType("varchar(50)")
+                        .HasColumnOrder(106)
+                        .HasComment("Ultimo usuario que actualiza el registro");
+
+                    b.HasKey("Id")
+                        .HasName("PK_empleado");
+
+                    b.HasIndex("PersonaId")
+                        .IsUnique();
+
+                    b.HasIndex("RolId");
+
+                    b.ToTable("Empleado", (string)null);
+                });
+
             modelBuilder.Entity("StoreRopa.Models.Persona", b =>
                 {
                     b.Property<long>("Id")
@@ -221,6 +301,66 @@ namespace StoreRopa.Migrations
                     b.ToTable("Persona", (string)null);
                 });
 
+            modelBuilder.Entity("StoreRopa.Models.Roles", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnOrder(1)
+                        .HasComment("Identificador de la tabla");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)")
+                        .HasColumnOrder(3)
+                        .HasComment("Descripción de las funciones del rol");
+
+                    b.Property<bool>("EsActivo")
+                        .HasColumnType("bit")
+                        .HasColumnOrder(101)
+                        .HasComment("Indica si el registro se encuentra activo y se puede usar");
+
+                    b.Property<bool>("EsEliminado")
+                        .HasColumnType("bit")
+                        .HasColumnOrder(102)
+                        .HasComment("Indica si el registro a sido eliminado(eliminado logico)");
+
+                    b.Property<DateTime>("FechaAlta")
+                        .HasColumnType("datetime")
+                        .HasColumnOrder(103)
+                        .HasComment("Fecha en que se crea el registro");
+
+                    b.Property<DateTime?>("FechaModificacion")
+                        .HasColumnType("datetime")
+                        .HasColumnOrder(105)
+                        .HasComment("Ultima fecha que se actualiza el registro");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
+                        .HasColumnOrder(2)
+                        .HasComment("Nombre del rol");
+
+                    b.Property<string>("UsuarioAlta")
+                        .HasColumnType("varchar(200)")
+                        .HasColumnOrder(104)
+                        .HasComment("Usuario que crea el registro");
+
+                    b.Property<string>("UsuarioModificacion")
+                        .HasColumnType("varchar(20)")
+                        .HasColumnOrder(106)
+                        .HasComment("Ultimo usuario que actualiza el registro");
+
+                    b.HasKey("Id")
+                        .HasName("PK_roles");
+
+                    b.ToTable("Roles", (string)null);
+                });
+
             modelBuilder.Entity("StoreRopa.Models.Cliente", b =>
                 {
                     b.HasOne("StoreRopa.Models.Persona", "Persona")
@@ -233,10 +373,39 @@ namespace StoreRopa.Migrations
                     b.Navigation("Persona");
                 });
 
+            modelBuilder.Entity("StoreRopa.Models.Empleados", b =>
+                {
+                    b.HasOne("StoreRopa.Models.Persona", "Persona")
+                        .WithOne("Empleado")
+                        .HasForeignKey("StoreRopa.Models.Empleados", "PersonaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Persona_Empleado");
+
+                    b.HasOne("StoreRopa.Models.Roles", "Rol")
+                        .WithMany("Empleados")
+                        .HasForeignKey("RolId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Rol_Empleado");
+
+                    b.Navigation("Persona");
+
+                    b.Navigation("Rol");
+                });
+
             modelBuilder.Entity("StoreRopa.Models.Persona", b =>
                 {
                     b.Navigation("Cliente")
                         .IsRequired();
+
+                    b.Navigation("Empleado")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("StoreRopa.Models.Roles", b =>
+                {
+                    b.Navigation("Empleados");
                 });
 #pragma warning restore 612, 618
         }

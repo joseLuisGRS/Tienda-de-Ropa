@@ -75,9 +75,10 @@ namespace StoreRopa.Models
 
         public virtual Cliente Cliente { get; set; } = null!;
 
-        public static implicit operator Persona(List<Persona> v)
-        {
-            throw new NotImplementedException();
-        }
+        public virtual Empleados Empleado { get; set; } = null!;
+
+
+
+
     }
 }

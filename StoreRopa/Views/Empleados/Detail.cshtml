@@ -1,0 +1,95 @@
+﻿@model StoreRopa.Models.Empleados
+@if (Model != null)
+{
+    <div class="row">
+        <form>
+            <div class="row">
+                <div class="row g-2">
+                    <div class="col-sm-8">
+                        <div class="form-outline">
+                            <label class="control-label">Nombre Completo</label>
+                            <input value="@Model.Persona.Nombres @Model.Persona.ApPaterno @Model.Persona.ApMaterno" class="form-control" disabled />
+                        </div>
+                    </div>    
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Persona.FechaNacimiento" class="control-label"></label>
+                            <input asp-for="Persona.FechaNacimiento" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Persona.Curp" class="control-label"></label>
+                            <input asp-for="Persona.Curp" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Persona.Telefono" class="control-label"></label>
+                            <input asp-for="Persona.Telefono" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Persona.Municipio" class="control-label"></label>
+                            <input asp-for="Persona.Municipio" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-2">                       
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Persona.Estado" class="control-label"></label>
+                            <input asp-for="Persona.Estado" class="form-control" disabled />
+                        </div>
+                    </div>                   
+                     <div class="col-sm-8">
+                        <div class="form-outline">
+                            <label asp-for="Persona.Direccion" class="control-label"></label>
+                            <input asp-for="Persona.Direccion" class="form-control" disabled />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">   
+                     <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Persona.Cp" class="control-label"></label>
+                            <input asp-for="Persona.Cp" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Persona.Numero" class="control-label"></label>
+                            <input asp-for="Persona.Numero" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="Usuario" class="control-label"></label>
+                            <input asp-for="Usuario" class="form-control" disabled />
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label class="control-label">Rol</label>
+                            <select class="form-select form-select-sm" disabled>
+                                <option value="">@Model.Rol.Nombre</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+}
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_Detail");
+    }
+}
