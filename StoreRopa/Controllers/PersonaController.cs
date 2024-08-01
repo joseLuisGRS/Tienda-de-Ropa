@@ -1,18 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StoreRopa.Data.Repository.Interfeces;
 using StoreRopa.Data.utils;
 using StoreRopa.Models;
+using StoreRopa.Models.utils;
 using StoreRopa.Models.Vo;
 
 namespace StoreRopa.Controllers
 {
+    [Authorize]
     public class PersonaController : Controller
     {
         private readonly ILogger<PersonaController> _logger;
         private readonly IUnitOfWork _unitOfWork;
-        public PersonaController(ILogger<PersonaController> logger, IUnitOfWork unitOfWork) {
-            this._logger = logger;
-            this._unitOfWork = unitOfWork;
+        private readonly CurrentUser _currentUser;
+        private readonly User _user;
+        public PersonaController(ILogger<PersonaController> logger, IUnitOfWork unitOfWork,
+            CurrentUser currentUser) {
+            _logger = logger;
+            _unitOfWork = unitOfWork;
+            _currentUser = currentUser;
+            _user = _currentUser.Builder();
         }
         
         /// <summary>
@@ -23,19 +31,20 @@ namespace StoreRopa.Controllers
         /// <param name="page"></param>
         /// <returns>Clientes encontrados en BD</returns>
         [HttpGet("/Clientes")]
-        public async Task<IActionResult> GetClientes(int pageSize = 1, int page = 1)
+        public IActionResult GetClientes(int pageSize = 1, int page = 1)
         {
             try
             {
                 if (pageSize == 1) pageSize = Constantes.PAGE_SIZE;
                 _logger.LogInformation("Se realiza búsqueda de clientes.");              
-                return View("Index", this._unitOfWork.PersonasRepository.GetClientes(pageSize, page).Result);
+                return View("Index", _unitOfWork.PersonasRepository.GetClientes(pageSize, page).Result);
             }
             catch (Exception e)
             {
                 _logger.LogCritical("Se presento un error en la búsqueda de clientes: " + e.Message);
                 ViewData["error"] = Messages.ERROR_MESSAGE;
-                return PartialView("Index", null);
+                PagedResult<Persona> persona = new PagedResult<Persona>();
+                return View("Index", persona);
             }
         }
         
@@ -43,7 +52,7 @@ namespace StoreRopa.Controllers
         /// Método encargado de direccionar a la vista para el registro de clientes
         /// </summary>
         /// <returns>Vista para el registro de clientes</returns>
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
                 return PartialView("Create", new PersonaClienteVO());
         }
@@ -67,20 +76,20 @@ namespace StoreRopa.Controllers
                     if (!Int64.TryParse(personaCliente.persona.Telefono, out Int64 tel)) {
                         throw new FormatException("Verifique el teléfono.");
                     }
-                    Persona personCurp = await this._unitOfWork.PersonasRepository
+                    Persona personCurp = await _unitOfWork.PersonasRepository
                         .getPersonaByCurp(personaCliente.persona.Curp);
                     if (personCurp != null)
                     {
                         throw new CustomException("La curp ya se encuentra registrada.");
                     }
-                    personaCliente.persona.UsuarioAlta = "prueba";
+                    personaCliente.persona.UsuarioAlta = _user.Id.ToString();
                     Persona persona = personaCliente.persona;
                     Cliente cliente = personaCliente.cliente;
-                    this._unitOfWork.PersonasRepository.Create(persona);
-                    cliente.UsuarioAlta = "prueba";
+                    await _unitOfWork.PersonasRepository.Create(persona);
+                    cliente.UsuarioAlta = _user.Id.ToString();
                     cliente.Persona = persona;
-                    this._unitOfWork.ClientesRepository.Create(cliente);
-                    this._unitOfWork.SaveChangesAsync().Wait();
+                    await _unitOfWork.ClientesRepository.Create(cliente);
+                    _unitOfWork.SaveChangesAsync().Wait();
                     _logger.LogInformation("Se realiza registro en BD de la persona con id " +  persona.Id);
                     _logger.LogInformation("Se realiza registro en BD del cliente con id " + cliente.Id);
                     ViewBag.Exito = Constantes.EXITO;
@@ -116,7 +125,7 @@ namespace StoreRopa.Controllers
             try
             {
                 if (id == null) throw new CustomException("Cliente no encontrado.");
-                var persona = await this._unitOfWork.PersonasRepository.getPersonaClienteById(id);
+                var persona = await _unitOfWork.PersonasRepository.getPersonaClienteById(id);
                 if (persona == null) throw new CustomException("Cliente no encontrado.");
                 return PartialView("Detail", persona);
             }
@@ -144,19 +153,21 @@ namespace StoreRopa.Controllers
             try
             {
                 if (id == null) throw new CustomException("Cliente no encontrado.");
-                var persona = await this._unitOfWork.PersonasRepository.getPersonaClienteById(id);
+                var persona = await _unitOfWork.PersonasRepository.getPersonaClienteById(id);
                 if (persona == null) throw new CustomException("Cliente no encontrado.");
                 return PartialView("Edit", new PersonaClienteVO(persona, persona.Cliente));
             }
             catch (CustomException e)
             {
-                _logger.LogError("Se presento un error en la edición del cliente idPersona " + id + ": " + e.Message);
+                _logger.LogError("Se presento un error en la edición del cliente idPersona " + id + ": " 
+                    + e.Message);
                 ViewData["error"] = e.Message;
                 return PartialView("Edit", null);
             }
             catch (Exception e)
             {
-                _logger.LogCritical("Se presento un error en la edición del cliente idPersona " + id + ": " + e.Message);
+                _logger.LogCritical("Se presento un error en la edición del cliente idPersona " + id + ": " 
+                    + e.Message);
                 ViewData["error"] = Messages.ERROR_MESSAGE;
                 return PartialView("Edit", null);
             }
@@ -179,12 +190,13 @@ namespace StoreRopa.Controllers
             {
                 try
                 {
-                    Persona person = await this._unitOfWork.PersonasRepository.GetById(personaCliente.persona.Id);
+                    Persona person = await _unitOfWork.PersonasRepository.GetById(personaCliente.persona.Id);
                     if (person == null)
                     {
                         throw new CustomException("El cliente no existe.");
                     }
-                    Cliente client = await this._unitOfWork.ClientesRepository.GetById(personaCliente.persona.Cliente.Id);
+                    Cliente client = await _unitOfWork.ClientesRepository
+                        .GetById(personaCliente.persona.Cliente.Id);
                     if (client == null)
                     {
                         throw new CustomException("El cliente no existe.");
@@ -193,28 +205,28 @@ namespace StoreRopa.Controllers
                     {
                         throw new FormatException("Verifique el teléfono.");
                     }
-                    Persona personCurp = await this._unitOfWork.PersonasRepository
+                    Persona personCurp = await _unitOfWork.PersonasRepository
                         .getPersonaByCurp(personaCliente.persona.Curp);
                     if (personCurp != null && personCurp.Id != personaCliente.persona.Id)
                     {
                         throw new CustomException("La curp ya se encuentra registrada.");
                     }
-                    personaCliente.persona.UsuarioModificacion = "prueba";
+                    personaCliente.persona.UsuarioModificacion = _user.Id.ToString();
                     personaCliente.persona.FechaAlta = person.FechaAlta;
                     personaCliente.persona.UsuarioAlta = person.UsuarioAlta;
                     personaCliente.persona.EsActivo = person.EsActivo;
                     Persona persona = personaCliente.persona;
                     Cliente cliente = personaCliente.persona.Cliente;
-                    this._unitOfWork.PersonasRepository.Update(persona);
-                    cliente.UsuarioModificacion = "prueba";
+                    _unitOfWork.PersonasRepository.Update(persona);
+                    cliente.UsuarioModificacion = _user.Id.ToString();
                     cliente.FechaAlta = client.FechaAlta;
                     cliente.Saldo = client.Saldo;
                     cliente.UsuarioAlta = client.UsuarioAlta;
                     cliente.EsActivo = client.EsActivo;
                     cliente.Persona = persona;
                     cliente.Id = client.Id;
-                    this._unitOfWork.ClientesRepository.Update(cliente);
-                    this._unitOfWork.SaveChangesAsync().Wait();
+                    _unitOfWork.ClientesRepository.Update(cliente);
+                    _unitOfWork.SaveChangesAsync().Wait();
                     _logger.LogInformation("Se realiza la actualización de la persona con id: " + persona.Id);
                     _logger.LogInformation("Se realiza la actualización del cliente con id: " + cliente.Id);
                     ViewBag.Exito = Constantes.EXITO;
@@ -251,12 +263,12 @@ namespace StoreRopa.Controllers
             int resultado = Constantes.ERROR;
             try
             {
-                Persona persona = await this._unitOfWork.PersonasRepository.getPersonaClienteById((long)id);
+                Persona persona = await _unitOfWork.PersonasRepository.getPersonaClienteById((long)id!);
                 if (persona == null)
                 {
                     throw new CustomException("El cliente no existe.");
                 }
-                Cliente cliente = await this._unitOfWork.ClientesRepository.GetById(persona.Cliente.Id);
+                Cliente cliente = await _unitOfWork.ClientesRepository.GetById(persona.Cliente.Id);
                 if (cliente == null)
                 {
                     throw new CustomException("El cliente no existe.");
@@ -267,25 +279,28 @@ namespace StoreRopa.Controllers
                 }
                 string opcion = "re-activación";
                 if (persona.EsActivo)  opcion = "desactiva";              
-                persona.UsuarioModificacion = "prueba";
-                this._unitOfWork.PersonasRepository.UpdateEstatus(persona);
-                cliente.UsuarioModificacion = "prueba";
+                persona.UsuarioModificacion = _user.Id.ToString();
+                _unitOfWork.PersonasRepository.UpdateEstatus(persona);
+                cliente.UsuarioModificacion = _user.Id.ToString();
                 cliente.Persona = persona;
-                this._unitOfWork.ClientesRepository.UpdateEstatus(cliente);
-                this._unitOfWork.SaveChangesAsync().Wait();
-                _logger.LogInformation("Se realiza cambio de estatus (" + opcion + ") a persona con id: " + persona.Id);
-                _logger.LogInformation("Se realiza cambio de estatus (" + opcion + ") a cliente con : " + cliente.Id);
+                _unitOfWork.ClientesRepository.UpdateEstatus(cliente);
+                _unitOfWork.SaveChangesAsync().Wait();
+                _logger.LogInformation("Se realiza cambio de estatus (" + opcion + ") a persona con id: " 
+                    + persona.Id);
+                _logger.LogInformation("Se realiza cambio de estatus (" + opcion + ") a cliente con : " 
+                    + cliente.Id);
                 resultado =  Constantes.EXITO;
             }
             catch (CustomException e)
             {
-                _logger.LogError("Se presento un error al cambiar estatus de persona (cliente) id " + id + ": "+ e.Message);
+                _logger.LogError("Se presento un error al cambiar estatus de persona (cliente) id " + id + ": "
+                    + e.Message);
                 return Content(string.Format("{0}", resultado));
             }
             catch (Exception e)
             {
-                _logger.LogCritical("Se presento un error al cambiar estatus de persona (cliente) id " + id + ": " 
-                    + e.Message);
+                _logger.LogCritical("Se presento un error al cambiar estatus de persona (cliente) id " + id 
+                    + ": " + e.Message);
                 return Content(string.Format("{0}", resultado));
             }
             return Content(string.Format("{0}", resultado));
@@ -303,12 +318,12 @@ namespace StoreRopa.Controllers
             int resultado = Constantes.ERROR;
             try
             {
-                Persona persona = await this._unitOfWork.PersonasRepository.getPersonaClienteById((long)id);
+                Persona persona = await _unitOfWork.PersonasRepository.getPersonaClienteById((long)id!);
                 if (persona == null)
                 {
                     throw new CustomException("El cliente no existe.");
                 }
-                Cliente cliente = await this._unitOfWork.ClientesRepository.GetById(persona.Cliente.Id);
+                Cliente cliente = await _unitOfWork.ClientesRepository.GetById(persona.Cliente.Id);
                 if (cliente == null)
                 {
                     throw new CustomException("El cliente no existe.");
@@ -316,12 +331,12 @@ namespace StoreRopa.Controllers
                 if (cliente.Saldo > 0) {
                     return Content(string.Format("{0}", 2));
                 }
-                persona.UsuarioModificacion = "prueba";
-                this._unitOfWork.PersonasRepository.Delete(persona);
-                cliente.UsuarioModificacion = "prueba";
+                persona.UsuarioModificacion = _user.Id.ToString();
+                _unitOfWork.PersonasRepository.Delete(persona);
+                cliente.UsuarioModificacion = _user.Id.ToString();
                 cliente.Persona = persona;
-                this._unitOfWork.ClientesRepository.Delete(cliente);
-                this._unitOfWork.SaveChangesAsync().Wait();
+                _unitOfWork.ClientesRepository.Delete(cliente);
+                _unitOfWork.SaveChangesAsync().Wait();
                 _logger.LogInformation("Se da de baja a la persona con id " + persona.Id);
                 _logger.LogInformation("Se da de baja al cliente con id " + cliente.Id);
                 resultado = Constantes.EXITO;
@@ -333,7 +348,8 @@ namespace StoreRopa.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogCritical("Se presento un error al dar de baja a la persona (cliente) idPersona " + id);
+                _logger.LogCritical("Se presento un error al dar de baja a la persona (cliente) idPersona " 
+                    + id);
                 return Content(string.Format("{0}", resultado));
             }
             return Content(string.Format("{0}" , resultado));

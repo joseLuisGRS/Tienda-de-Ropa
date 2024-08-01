@@ -25,5 +25,7 @@ namespace StoreRopa.Models
         [Required(ErrorMessage = "La {0} es obligatoria.")]
         [StringLength(100)]
         public string Password { get; set; }
+
+        public virtual ICollection<Ventas> Ventas { get; set; }
     }
 }

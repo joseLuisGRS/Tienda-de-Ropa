@@ -3,14 +3,18 @@ using StoreRopa.Data.Repository.Interfeces;
 using StoreRopa.Data.utils;
 using StoreRopa.Models;
 using StoreRopa.Models.utils;
+using StoreRopa.Models.Vo;
 
 namespace StoreRopa.Data.Repository
 {
     public class RolesRepository : BaseRepository<Roles>, IRolesRepository
     {
-
-        public RolesRepository(StoreDBContext bdContext) : base(bdContext)
+        private readonly CurrentUser _currentUser;
+        private readonly User _user;
+        public RolesRepository(StoreDBContext bdContext, CurrentUser currentUser) : base(bdContext)
         {
+            _currentUser = currentUser;
+            _user = _currentUser.Builder();
         }
 
         /// <summary>
@@ -24,7 +28,9 @@ namespace StoreRopa.Data.Repository
         {
             try
             {
-                return await _entities.AsNoTracking().Where(e => e.EsEliminado == Constantes.INACTIVO)
+                string user = "";
+                if (_user.UserName.ToLower() != Constantes.SUPER_ADMIN.ToLower()) user = Constantes.SUPER_ADMIN.ToLower();
+                return await _entities.AsNoTracking().Where(e => e.EsEliminado == Constantes.INACTIVO && e.Nombre.ToLower() != user)
                     .OrderBy(e => e.Nombre).GetPagedResultAsync(pageSize, page);
             }
             catch (Exception e)
@@ -59,8 +65,10 @@ namespace StoreRopa.Data.Repository
         {
             try
             {
+                string user = "";
+                if (_user.UserName.ToLower() != Constantes.SUPER_ADMIN.ToLower()) user = Constantes.SUPER_ADMIN.ToLower();
                 return _entities.AsNoTracking().Where(e => e.EsEliminado == Constantes.INACTIVO 
-                    && e.EsActivo == Constantes.ACTIVO).OrderBy(e => e.Nombre).ToList();
+                    && e.EsActivo == Constantes.ACTIVO && e.Nombre != user).OrderBy(e => e.Nombre).ToList();
             }
             catch (Exception e)
             {

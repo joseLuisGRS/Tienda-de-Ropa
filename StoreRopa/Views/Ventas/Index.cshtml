@@ -1,6 +1,241 @@
-﻿@{
-    ViewData["Title"] = "Venta";
+﻿@model StoreRopa.Models.Vo.VentasVO
+@{
+    ViewData["Title"] = "Ventas";
 }
-<div class="alert-primary text-center">
-    <h1 class="justify-content-center">@Html.ViewData["Title"]</h1>
+<div class="row" id="divPrincipal">
+    <form asp-action="GenerarVenta" id="frmVentas" onKeyPress="if (event.keyCode == 13) event.returnValue = false; ">
+       <div class="row">
+            <input type="hidden" id="txtExito" name="txtExito" value="@Html.ViewBag.Exito" />
+            <input type="hidden" id="txtErrorMessage" name="txtErrorMessage" value="@Html.ViewData["error"]" />
+            <div id="error" class="ui-state-error"></div>
+
+            <div class="row g-3">
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <h1 class="justify-content-center">@Html.ViewData["Title"]</h1>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label class="form-check-label">Tipo de búsqueda del cliente</label><br />
+                        <input class="form-check-input"  type="radio" asp-for="TipoBusqueda" value="id" />
+                        <label class="form-check-label">Clave cliente</label>
+                        <input class="form-check-input"  type="radio" asp-for="TipoBusqueda" value="curp" />
+                        <label class="form-check-label">Curp</label>
+                        <input class="form-check-input"  type="radio" asp-for="TipoBusqueda" value="nombre" checked />
+                        <label class="form-check-label">Nombre</label>                       
+                    </div>
+                </div>
+                <div class="col-sm" id="divClaveCliente">
+                    <div class="form-outline">
+                        <br />
+                        <input asp-for="ClaveCliente" class="form-control" id="txtClaveCliente" onkeypress="return validar('txtClaveCliente',10);"
+                               onkeydown="return onlyNumbers(event);" />
+                        <span asp-validation-for="ClaveCliente" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm" id="divCurp">
+                    <div class="form-outline">
+                        <br />
+                        <input asp-for="Curp" class="form-control" onkeypress="return letrasNumeros(event);" onkeyup="this.value = upper(this.value)" />
+                        <span asp-validation-for="Curp" class="text-danger"></span>
+                    </div>
+                </div>                
+                 <div class="col-sm" id="divClientes">
+                    <div class="form-outline">
+                        <br />
+                        <select class="form-select" asp-items="@((List<SelectListItem>)(ViewData["Clientes"]))" id="cliente"
+                                asp-for="ClienteId" data-none-selected-text="Filter" data-live-search="true" data-container="body">
+                            <option value="-1">Seleccione</option>
+                        </select>
+                        <span asp-validation-for="ClienteId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm" id="divBtn">
+                    <div class="form-outline">
+                        <br />
+                        <button type="button" class="btn btn-primary" id="btnConsultarCliente"> <i class="bi bi-search"></i>
+                            Consultar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm" id="divDatosVenta">
+                <div class="row g-3">
+                    <div class="col col-lg-2">
+                        <div class="form-outline">
+                            <label asp-for="Venta.ClienteId" class="control-label"></label><br />
+                            <label class="control-label" style="color:darkred ;" id="VentaClienteId" />
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="NombreCliente" class="control-label"></label><br />
+                            <label id="lblNombreCliente" class="control-label" style="color:darkred ;" />
+                        </div>
+                    </div>
+                    <div class="col col-lg-2" id="divTipoVenta">
+                        <div class="form-outline">
+                            <label class="form-check-label">Tipo de Venta</label><br />
+                            <input class="form-check-input"  type="radio" asp-for="TipoVenta" value="contado" />
+                            <label class="form-check-label">Contado</label>
+                            <input class="form-check-input" type="radio" asp-for="TipoVenta" value="credito" checked />
+                            <label class="form-check-label">Crédito</label>
+                        </div>
+                    </div>
+                    <div class="col col-lg-2">
+                        <div class="form-outline">
+                            <label asp-for="Venta.ImporteVenta" class="control-label"></label>
+                            <input asp-for="Venta.ImporteVenta" class="form-control" id="txtImporteVenta" 
+                                style="background-color:transparent;" readonly />
+                            <span asp-validation-for="Venta.ImporteVenta" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col col-lg-2">
+                        <div class="form-outline">
+                            <label asp-for="Venta.AbonoVenta" class="control-label"></label>
+                            <input asp-for="Venta.AbonoVenta" class="form-control maskMoney" id="txtAbonoVenta"
+                                   onkeypress="return validar('txtAbonoVenta',10)" style="background-color:transparent;"
+                                   onkeydown="return DecimalLongitud(event, this);" data-val-number="El Abono es incorrecto." />
+                            <span asp-validation-for="Venta.AbonoVenta" id="spAbono" class="text-danger"></span>
+                        </div>
+                    </div>
+                     <div class="col col-lg-2" id="divPendientePago">
+                        <div class="form-outline">
+                            <label asp-for="Venta.PendientePago" class="control-label"></label>
+                            <input asp-for="Venta.PendientePago" id="txtPendientePago" class="form-control" style="background-color:transparent;" readonly />
+                            <span asp-validation-for="Venta.PendientePago" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <label asp-for="DetalleVenta.Descripcion" class="control-label"></label>
+                            <input asp-for="DetalleVenta.Descripcion" id="txtDescripcion" class="form-control" />
+                            <span asp-validation-for="DetalleVenta.Descripcion" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col col-lg-1">
+                        <div class="form-outline">
+                            <label asp-for="DetalleVenta.Talla" class="control-label"></label>
+                            <input asp-for="DetalleVenta.Talla"id="txtTalla" class="form-control" />
+                            <span asp-validation-for="DetalleVenta.Talla" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col col-lg-3">
+                        <div class="form-outline">
+                            <label asp-for="DetalleVenta.Color" class="control-label"></label>
+                            <input asp-for="DetalleVenta.Color" id="txtColor" class="form-control" />
+                            <span asp-validation-for="DetalleVenta.Color" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col col-lg-2">
+                        <div class="form-outline">
+                            <label asp-for="DetalleVenta.Modelo" class="control-label"></label>
+                            <input asp-for="DetalleVenta.Modelo" id="txtModelo" class="form-control" />
+                            <span asp-validation-for="DetalleVenta.Modelo" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col col-lg-2">
+                        <div class="form-outline">
+                            <label asp-for="DetalleVenta.PrecioArticulo" class="control-label"></label>
+                            <input asp-for="DetalleVenta.PrecioArticulo" class="form-control" id="txtPrecioArticulo" onkeypress="return validar('txtPrecioArticulo',10)"
+                                   onkeydown="return Decimal(this);" data-val-number="El Precio del articulo es incorrecto." />
+                            <span asp-validation-for="DetalleVenta.PrecioArticulo" id="spPrecioArticulo" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col col-lg-2">
+                        <div class="form-outline">
+                            <label asp-for="DetalleVenta.Descuento" class="control-label"></label>
+                            <input asp-for="DetalleVenta.Descuento" class="form-control" id="txtDescuento" onkeypress="return validar('txtDescuento',10)"
+                                   onkeydown="return Decimal(this);" data-val-number="El descuento es incorrecto." />
+                            <span asp-validation-for="DetalleVenta.Descuento" id="spDescuento" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col col-lg-2">
+                        <div class="form-outline">
+                            <label asp-for="DetalleVenta.PrecioVenta" class="control-label"></label>
+                            <input asp-for="DetalleVenta.PrecioVenta" id="txtPrecioVenta" class="form-control" style="background-color:transparent;" readonly />
+                        </div>
+                    </div>
+                    
+                    <div class="col col-lg-2">
+                        <div class="form-outline">
+                            <br />
+                            <button type="button" class="btn btn-outline-primary btn-sm my-1" id="btnAgregar">
+                                Agregar <i class="bi bi-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col col-lg-4">
+                        <div class="form d-flex pt-4">
+                            <br />
+                            <button type="button" class="btn btn-outline-danger btn-sm my-1" id="btnCancelar">
+                                Cancelar Venta <i class="bi bi-trash-fill"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm mx-2 my-1" id="btnVender">
+                                Realizar Venta <i class="bi bi-check2-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+                <br />
+                <div class="row g-1">
+                    <div class="col-sm">
+                        <div class="form-outline">
+                            <table class="table table-bordered table-hover" id="tablaArticulos">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th> @Html.DisplayName("Artículo")</th>
+                                        <th> @Html.DisplayName("Talla")</th>
+                                        <th> @Html.DisplayName("Color")</th>
+                                        <th> @Html.DisplayName("Modelo")</th>
+                                        <th> @Html.DisplayName("Costo")</th>
+                                        <th> @Html.DisplayName("Descuento")</th>
+                                        <th> @Html.DisplayName("Total")</th>
+                                        <th class="abonoArticulo"> @Html.DisplayName("Abono")</th>
+                                        <th> @Html.DisplayName("")</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
+
+<div id="myModal" class="modal " tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header bg-black justify-content-center">
+                <h5 class="modal-title text-white" id="myModalLabel">Seleccionar Cliente</h5>
+            </div>
+            <div class="modal-body">
+                <div id="modal-content">
+                    Cargando...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger close" data-dismiss="myModal">Cancelar <i class="bi bi-x-lg"></i></button>
+                <button type="button" class="btn btn-primary" data-dismiss="myModal" id="btnSeleccionar">Seleccionar <i class="bi bi-check-circle-fill"></i></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/ventas/ventas.js"></script>
+}

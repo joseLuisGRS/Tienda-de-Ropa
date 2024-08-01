@@ -16,6 +16,7 @@ namespace StoreRopa.Models
         [Required(ErrorMessage = "El {0} es obligatorio.")]
         [Display(Name = "Tipo de venta")]
         public int? TipoVenta { get; set; }
-        
+        public virtual ICollection<Ventas> Ventas { get; set; }
+
     }
 }

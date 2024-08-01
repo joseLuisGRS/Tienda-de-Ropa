@@ -61,3 +61,11 @@ function letrasNumeros(e) {
 function upper(e) {
     return e.toUpperCase();
 }
+
+function Decimal(input) {
+    var regex = /^\d*(\.\d{1})?\d{0,1}$/;
+    if (regex.test(input)) {
+        return false;
+    }
+    return input;
+}

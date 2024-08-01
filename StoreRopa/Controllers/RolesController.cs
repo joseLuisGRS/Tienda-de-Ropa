@@ -1,21 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StoreRopa.Data;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StoreRopa.Data.Repository.Interfeces;
 using StoreRopa.Data.utils;
 using StoreRopa.Models;
-using StoreRopa.Models.utils;
 using StoreRopa.Models.Vo;
 
 namespace StoreRopa.Controllers
 {
+    [Authorize]
     public class RolesController : Controller
     {
         private readonly ILogger<RolesController> _logger;
         private readonly IUnitOfWork _unitOfWork;
-        public RolesController(ILogger<RolesController> logger, IUnitOfWork unitOfWork) {
-            this._logger = logger;
-            this._unitOfWork = unitOfWork;
+        private readonly CurrentUser _currentUser;
+        private readonly User _user;
+        public RolesController(ILogger<RolesController> logger, IUnitOfWork unitOfWork, CurrentUser currentUser) {
+            _logger = logger;
+            _unitOfWork = unitOfWork;
+            _currentUser = currentUser;
+            _user = _currentUser.Builder();
         }
 
         /// <summary>
@@ -26,19 +29,19 @@ namespace StoreRopa.Controllers
         /// <param name="page"></param>
         /// <returns></returns>
         [HttpGet("/Roles")]
-        public async Task<IActionResult> GetRoles(int pageSize = 1, int page = 1)
+        public IActionResult GetRoles(int pageSize = 1, int page = 1)
         {
             try
             {
                 if (pageSize == 1) pageSize = Constantes.PAGE_SIZE;
-                _logger.LogCritical("Se realiza búsqueda de roles");
-                return View("Index", this._unitOfWork.RolesRepository.GetAllRoles(pageSize, page).Result);
+                _logger.LogInformation("Se realiza búsqueda de roles");                
+                return View("Index", _unitOfWork.RolesRepository.GetAllRoles(pageSize, page).Result);
             }
             catch (Exception e)
             {
                 _logger.LogCritical("Se presento un error en la búsqueda de roles: " + e.Message);
                 ViewData["error"] = Messages.ERROR_MESSAGE;
-                return PartialView("Index", null);
+                return View("Index");
             }
         }
 
@@ -46,7 +49,7 @@ namespace StoreRopa.Controllers
         /// Método encargado de direccionar a la vista para el registro de roles
         /// </summary>
         /// <returns>Vista para el registro de roles</returns>
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             return PartialView("Create", new RolesVO());
         }
@@ -68,15 +71,15 @@ namespace StoreRopa.Controllers
                 {
                     string nombre = rolVO.roles.Nombre.Replace(" ", String.Empty);
                     rolVO.roles.Nombre = nombre;
-                    Roles rolBd = await this._unitOfWork.RolesRepository.getRolByName(nombre);
+                    Roles rolBd = await _unitOfWork.RolesRepository.getRolByName(nombre);
                     if (rolBd != null)
                     {
                         throw new CustomException("El nombre del rol ya se encuentra registrado.");
                     }
-                    rolVO.roles.UsuarioAlta = "prueba";
+                    rolVO.roles.UsuarioAlta = _user.Id.ToString();
                     Roles rol = rolVO.roles;
-                    this._unitOfWork.RolesRepository.Create(rol);
-                    this._unitOfWork.SaveChangesAsync().Wait();
+                    await _unitOfWork.RolesRepository.Create(rol);
+                    _unitOfWork.SaveChangesAsync().Wait();
                     _logger.LogInformation("Se realiza registro en BD del rol con id " + rol.Id);
                     ViewBag.Exito = Constantes.EXITO;
                     return PartialView("Create", new RolesVO());
@@ -110,7 +113,7 @@ namespace StoreRopa.Controllers
             try
             {
                 if (id == null) throw new CustomException("Rol no encontrado.");
-                var rol = await this._unitOfWork.RolesRepository.GetById((long) id);
+                var rol = await _unitOfWork.RolesRepository.GetById((long) id);
                 if (rol == null) throw new CustomException("Rol no encontrado.");
                 ViewBag.Exito = Constantes.EXITO;
                 return PartialView("Edit", new RolesVO(rol));
@@ -144,23 +147,23 @@ namespace StoreRopa.Controllers
             {
                 try
                 {
-                    Roles rol = await this._unitOfWork.RolesRepository.GetById(rolesVO.roles.Id);
+                    Roles rol = await _unitOfWork.RolesRepository.GetById(rolesVO.roles.Id);
                     if (rol == null)
                     {
                         throw new CustomException("El rol no existe.");
                     }
                     string nombre = rolesVO.roles.Nombre.Replace(" ", String.Empty);
                     rolesVO.roles.Nombre = nombre;
-                    Roles rolName = await this._unitOfWork.RolesRepository.getRolByName(nombre);
+                    Roles rolName = await _unitOfWork.RolesRepository.getRolByName(nombre);
                     if (rolName != null && rolName.Id != rolesVO.roles.Id)
                     {
                         throw new CustomException("El rol ya se encuentra registrado.");
                     }
-                    rol.UsuarioModificacion = "prueba";
+                    rol.UsuarioModificacion = _user.Id.ToString();
                     rol.Nombre = rolesVO.roles.Nombre;
                     rol.Descripcion = rolesVO.roles.Descripcion;
-                    this._unitOfWork.RolesRepository.Update(rol);
-                    this._unitOfWork.SaveChangesAsync();
+                    _unitOfWork.RolesRepository.Update(rol);
+                    _unitOfWork.SaveChangesAsync().Wait();
                     _logger.LogInformation("Se realiza la actualización del rol con id: " + rol.Id);
                     ViewBag.Exito = Constantes.EXITO;
                     return PartialView("Edit", new RolesVO());
@@ -191,12 +194,12 @@ namespace StoreRopa.Controllers
             int resultado = Constantes.ERROR;
             try
             {
-                Roles rol = await this._unitOfWork.RolesRepository.GetById((long)id);
+                Roles rol = await _unitOfWork.RolesRepository.GetById((long)id!);
                 if (rol == null)
                 {
                     throw new CustomException("El rol no existe.");
                 }
-                Empleados empleado = await this._unitOfWork.EmpleadosRepository
+                Empleados empleado = await _unitOfWork.EmpleadosRepository
                     .GetEmpleadoRolByRolId(rol.Id);
                 if (empleado != null && rol.EsActivo)
                 {
@@ -204,9 +207,9 @@ namespace StoreRopa.Controllers
                 }
                 string opcion = "re-activación";
                 if (rol.EsActivo) opcion = "desactiva";
-                rol.UsuarioModificacion = "prueba";
-                this._unitOfWork.RolesRepository.UpdateEstatus(rol);
-                this._unitOfWork.SaveChangesAsync().Wait();
+                rol.UsuarioModificacion = _user.Id.ToString();
+                _unitOfWork.RolesRepository.UpdateEstatus(rol);
+                _unitOfWork.SaveChangesAsync().Wait();
                 _logger.LogInformation("Se realiza cambio de estatus (" + opcion + ") al rol con id: " + rol.Id);
                 resultado = Constantes.EXITO;
             }
@@ -234,20 +237,19 @@ namespace StoreRopa.Controllers
             int resultado = Constantes.ERROR;
             try
             {
-                Roles rol = await this._unitOfWork.RolesRepository.GetById((long)id);
+                Roles rol = await _unitOfWork.RolesRepository.GetById((long)id!);
                 if (rol == null)
                 {
                     throw new CustomException("El rol no existe.");
                 }
-                Empleados empleado = await this._unitOfWork.EmpleadosRepository
-                    .GetEmpleadoRolByRolId(rol.Id);
+                Empleados empleado = await _unitOfWork.EmpleadosRepository.GetEmpleadoRolByRolId(rol.Id);
                 if (empleado != null && rol.EsActivo)
                 {
                     return Content(string.Format("{0}", 2));
                 }               
-                rol.UsuarioModificacion = "prueba";
-                this._unitOfWork.RolesRepository.Delete(rol);
-                this._unitOfWork.SaveChangesAsync().Wait();
+                rol.UsuarioModificacion = _user.Id.ToString();
+                _unitOfWork.RolesRepository.Delete(rol);
+                _unitOfWork.SaveChangesAsync().Wait();
                 _logger.LogInformation("Se da de baja el rol con id " + rol.Id);
                 resultado = Constantes.EXITO;
             }

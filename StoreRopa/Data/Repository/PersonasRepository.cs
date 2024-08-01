@@ -3,6 +3,7 @@ using StoreRopa.Data.Repository.Interfeces;
 using StoreRopa.Data.utils;
 using StoreRopa.Models;
 using StoreRopa.Models.utils;
+using StoreRopa.Models.Vo;
 
 namespace StoreRopa.Data.Repository
 {
@@ -84,5 +85,50 @@ namespace StoreRopa.Data.Repository
             }
         }
 
+        /// <summary>
+        /// Método encargado de la obtención de clientes que no han sido eliminados logicamente
+        /// buscando por coincidencia ya sea por idCliente o curp
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <param name="page"></param>
+        /// <param name="idCliente"></param>
+        /// <param name="curp"></param>
+        /// <returns>Clientes encontrados en BD</returns>
+        public async Task<PagedResult<Persona>> GetClientesByCoincidencia(int pageSize, int page, Int64 idCliente, 
+            string curp, int tipoConsulta)
+        {
+            try
+            {
+                if (tipoConsulta == 1)
+                {
+                    return await _entities.AsNoTracking().Include(e => e.Cliente)
+                    .Where(e => e.Cliente.EsEliminado == Constantes.INACTIVO && e.Cliente.EsActivo == Constantes.ACTIVO
+                        && e.Cliente.Id.ToString().Contains(idCliente.ToString())).OrderBy(e => e.Nombres)
+                    .GetPagedResultAsync(pageSize, page);
+                }
+                else {
+                    return await _entities.AsNoTracking().Include(e => e.Cliente)
+                    .Where(e => e.Cliente.EsEliminado == Constantes.INACTIVO && e.Cliente.EsActivo == Constantes.ACTIVO
+                        && e.Curp.Contains(curp)).OrderBy(e => e.Nombres)
+                    .GetPagedResultAsync(pageSize, page);
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        public async Task<Persona> Auth(AuthVo authVo) {
+            try
+            {
+                return await _entities.AsNoTracking().Include(e => e.Empleado).FirstOrDefaultAsync(e => 
+                    e.Empleado.Usuario == authVo.Usuario && e.Empleado.Password == authVo.Password);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
     }
 }

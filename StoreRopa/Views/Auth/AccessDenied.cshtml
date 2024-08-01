@@ -1,0 +1,7 @@
+﻿@{
+    ViewData["Title"] = "Acceso Denegado, no cuentas con los permisos necesarios.";
+}
+@Html.AntiForgeryToken()
+<div class="alert-danger text-center">
+    <h1 class="justify-content-center">@Html.ViewData["Title"]</h1>
+</div>

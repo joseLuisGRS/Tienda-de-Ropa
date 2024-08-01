@@ -103,7 +103,7 @@ $("#btnEdit").click(function (eve) {
                 },
                 success: function (data) {
                     $('#myModalEdit').find('.modal-body').replaceWith("<div class = 'modal-body'>" + data + "</div>");
-                    if ($('#txtExito').val() == "1") {
+                    if ($('#txtExito').val().toString() == "1") {
                         $('#myModalEdit').modal('hide');
                         Swal.fire({
                             position: 'top-end',

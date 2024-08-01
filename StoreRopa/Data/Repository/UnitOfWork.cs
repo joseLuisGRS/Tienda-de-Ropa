@@ -1,20 +1,23 @@
 ﻿using StoreRopa.Data.Repository.Interfeces;
+using StoreRopa.Models.Vo;
+using StoreRopa.Models;
 
 namespace StoreRopa.Data.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly StoreDBContext _context;
-
-        public UnitOfWork(StoreDBContext context)
+        private readonly CurrentUser _currentUser;
+        public UnitOfWork(StoreDBContext context, CurrentUser currentUser)
         {
-            this._context = context;
+            _context = context;
+            _currentUser = currentUser;
         }
 
         public IPersonasRepository PersonasRepository => new PersonasRepository(_context);
         public IClientesRepository ClientesRepository => new ClientesRepository(_context);
-        public IRolesRepository RolesRepository => new RolesRepository(_context);
-        public IEmpleadosRepository EmpleadosRepository => new EmpleadosRepository(_context);
+        public IRolesRepository RolesRepository => new RolesRepository(_context, _currentUser);
+        public IEmpleadosRepository EmpleadosRepository => new EmpleadosRepository(_context, _currentUser);
 
         public void Dispose()
         {

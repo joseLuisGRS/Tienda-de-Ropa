@@ -12,6 +12,17 @@ namespace StoreRopa.Data.Repository
         {
         }
 
-
+        public IEnumerable<Cliente> GetClientesPersona()
+        {
+            try
+            {
+                return _entities.AsNoTracking().Include(e => e.Persona).Where(e => e.EsActivo == Constantes.ACTIVO)
+                    .OrderBy(e => e.Persona.Nombres).AsEnumerable();
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
     }
 }

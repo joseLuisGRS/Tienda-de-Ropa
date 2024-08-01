@@ -29,6 +29,10 @@
       "PackagePath": "staticwebassets\\js\\Roles\\Roles.js"
     },
     {
+      "Id": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\js\\Ventas\\Ventas.js",
+      "PackagePath": "staticwebassets\\js\\Ventas\\Ventas.js"
+    },
+    {
       "Id": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },
@@ -287,6 +291,10 @@
     {
       "Id": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\lib\\jquery\\dist\\maskMoney.js",
+      "PackagePath": "staticwebassets\\lib\\jquery\\dist\\maskMoney.js"
     },
     {
       "Id": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\wwwroot\\lib\\sweetalert\\sweetalert2.js",

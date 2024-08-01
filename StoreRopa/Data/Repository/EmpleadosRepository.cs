@@ -3,13 +3,18 @@ using StoreRopa.Data.Repository.Interfeces;
 using StoreRopa.Data.utils;
 using StoreRopa.Models;
 using StoreRopa.Models.utils;
+using StoreRopa.Models.Vo;
 
 namespace StoreRopa.Data.Repository
 {
     public class EmpleadosRepository : BaseRepository<Empleados>, IEmpleadosRepository
     {
-        public EmpleadosRepository(StoreDBContext bdContext) : base(bdContext)
+        private readonly CurrentUser _currentUser;
+        private readonly User _user;
+        public EmpleadosRepository(StoreDBContext bdContext, CurrentUser currentUser) : base(bdContext)
         {
+            _currentUser = currentUser;
+            _user = _currentUser.Builder();
         }
 
         /// <summary>
@@ -23,8 +28,11 @@ namespace StoreRopa.Data.Repository
         {
             try
             {
+                string user = "";
+                if (_user.UserName.ToLower() != Constantes.SUPER_ADMIN.ToLower()) user = Constantes.SUPER_ADMIN.ToLower();
                 return await _entities.AsNoTracking().Include(e => e.Persona).Include(e => e.Rol)
-                    .Where(e => e.EsEliminado == Constantes.INACTIVO).OrderBy(e => e.Persona.Nombres)
+                    .Where(e => e.EsEliminado == Constantes.INACTIVO && e.Usuario.ToLower() != user)
+                    .OrderBy(e => e.Persona.Nombres)
                     .GetPagedResultAsync(pageSize, page);
             }
             catch (Exception e)
@@ -81,5 +89,19 @@ namespace StoreRopa.Data.Repository
             }
         }
 
+        public async Task<Empleados> getEmpleadoAndRolByUser(string user)
+        {
+            try
+            {
+                return await _entities.AsNoTracking().Include(e => e.Persona).Include(e => e.Rol)
+                    .Where(e => e.EsActivo == Constantes.ACTIVO && e.Persona.EsActivo == Constantes.ACTIVO 
+                        && e.Rol.EsActivo == Constantes.ACTIVO)
+                    .FirstOrDefaultAsync(e => e.Usuario == user);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
     }
 }
