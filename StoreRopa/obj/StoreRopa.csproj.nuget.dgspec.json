@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\StoreRopa\\StoreRopa\\StoreRopa.csproj": {}
+    "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\StoreRopa.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\StoreRopa\\StoreRopa\\StoreRopa.csproj": {
+    "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\StoreRopa.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\StoreRopa\\StoreRopa\\StoreRopa.csproj",
+        "projectUniqueName": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\StoreRopa.csproj",
         "projectName": "StoreRopa",
-        "projectPath": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\StoreRopa\\StoreRopa\\StoreRopa.csproj",
+        "projectPath": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\StoreRopa.csproj",
         "packagesPath": "C:\\Users\\Jose luis\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\StoreRopa\\StoreRopa\\obj\\",
+        "outputPath": "C:\\Users\\Jose luis\\Documents\\NET\\StoreRopa\\Tienda-de-Ropa\\StoreRopa\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
@@ -27,6 +27,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,6 +40,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -48,6 +54,14 @@
             "EntityFramework": {
               "target": "Package",
               "version": "[6.4.4, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[6.0.32, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.32, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -75,11 +89,19 @@
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
-              "version": "[6.0.13, )"
+              "version": "[6.0.16, )"
+            },
+            "Serilog.Extensions.Logging.File": {
+              "target": "Package",
+              "version": "[3.0.0, )"
             },
             "StackExchange.Redis": {
               "target": "Package",
               "version": "[2.6.122, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.35.0, )"
             }
           },
           "imports": [
@@ -101,7 +123,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -41,6 +41,7 @@ function onlyNumbers(event) {
     }
     return patron.test(tecla_final);
 }
+
 function onlyLetras(e) {
     tecla = (document.all) ? e.keyCode : e.which;
     if ((tecla == 8) || (tecla == 32)) return true;
@@ -48,6 +49,7 @@ function onlyLetras(e) {
     tecla_final = String.fromCharCode(tecla);
     return patron.test(tecla_final);
 }
+
 function letrasNumeros(e) {
     tecla = (document.all) ? e.keyCode : e.which;
     if (tecla == 8) return true;
@@ -55,6 +57,15 @@ function letrasNumeros(e) {
     tecla_final = String.fromCharCode(tecla);
     return patron.test(tecla_final);
 }
+
 function upper(e) {
     return e.toUpperCase();
+}
+
+function Decimal(input) {
+    var regex = /^\d*(\.\d{1})?\d{0,1}$/;
+    if (regex.test(input)) {
+        return false;
+    }
+    return input;
 }

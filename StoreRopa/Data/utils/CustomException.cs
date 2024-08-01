@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace StoreRopa.Data.utils
+﻿namespace StoreRopa.Data.utils
 {
     [Serializable]
     public class CustomException : Exception

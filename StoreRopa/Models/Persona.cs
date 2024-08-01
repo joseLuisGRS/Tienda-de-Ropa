@@ -1,10 +1,5 @@
-﻿using MessagePack;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 
 namespace StoreRopa.Models
 {
@@ -41,16 +36,16 @@ namespace StoreRopa.Models
         public DateTime? FechaNacimiento { get; set; }
 
         [Column(Order = 7)]
-        [Required(ErrorMessage = "La {0} es obligatoria.")]
+        [Required(ErrorMessage = "El {0} es obligatoria.")]
         [Display(Name ="Municipio")]
         [StringLength(500)]
-        public string Ciudad { get; set; }
+        public string Municipio { get; set; }
 
         [Column(Order = 8)]
         [Required(ErrorMessage = "El {0} es obligatorio.")]
         [Display(Name = "Estado")]
         [StringLength(500)]
-        public string Pais { get; set;}
+        public string Estado { get; set;}
 
         [Column(Order = 9)]
         [Required(ErrorMessage = "La {0} es obligatoria.")]
@@ -80,9 +75,10 @@ namespace StoreRopa.Models
 
         public virtual Cliente Cliente { get; set; } = null!;
 
-        public static implicit operator Persona(List<Persona> v)
-        {
-            throw new NotImplementedException();
-        }
+        public virtual Empleados Empleado { get; set; } = null!;
+
+
+
+
     }
 }

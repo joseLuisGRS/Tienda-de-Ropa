@@ -1,0 +1,191 @@
+﻿@using StoreRopa.Data.utils
+@model (StoreRopa.Models.utils.PagedResult<Empleados> empleados, StoreRopa.Models.User currentUser)
+@{
+    ViewData["Title"] = "Empleados";
+}
+@Html.AntiForgeryToken()
+<div class="alert-primary text-center">
+    <h1 class="justify-content-center">@Html.ViewData["Title"]</h1>
+</div>
+<div class="row">
+    <div class="row g-3">
+        <div class="col-sm">
+            <div class="form-outline">
+                <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#add-empleado" data-url="@Url.Action("Create")">
+                    Agregar <i class="bi bi-plus-circle"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-outline"></div>
+        </div>
+        <div class="col-sm">
+            <div class="form-outline">
+                <input id="txtBuscar" class="form-control" placeholder="Buscar registro" />
+            </div>
+        </div>       
+    </div>
+</div>
+<br />
+<table class="table table-bordered table-hover" id="dataTab">
+    <thead class="thead-dark">
+        <tr>
+            <th>#</th>
+            <th> @Html.DisplayName("Nombre")</th>
+            <th> @Html.DisplayName("Fecha de Nacimiento")</th>
+            <th> @Html.DisplayName("Curp")</th>
+            <th> @Html.DisplayName("Dirección")</th>
+            <th> @Html.DisplayName("Usuario")</th>
+            <th> @Html.DisplayName("Rol")</th>
+            <th> @Html.DisplayName("Acción")</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var i = 1;
+        }
+        @foreach (var empleado in Model.empleados.Results)
+        {
+            var rowNo = (Model.empleados.CurrentPage - 1) * Model.empleados.PageSize + i;
+            i++;
+            <tr class="bus">
+                <td>@rowNo</td>
+                <td>@empleado.Persona.Nombres @empleado.Persona.ApPaterno @empleado.Persona.ApMaterno</td>
+                <td>@(String.Format("{0:dd/MM/yyyy}", @empleado.Persona.FechaNacimiento))</td>
+                <td>@empleado.Persona.Curp</td>
+                <td>@empleado.Persona.Direccion</td>
+                <td>@empleado.Usuario</td>
+                <td>@empleado.Rol.Nombre</td>
+                <td>
+                    <a onclick="showInPopup('@Url.Action("Detail","Empleados",new{id = @empleado.PersonaId },Context.Request.Scheme)')" style="cursor: hand; cursor: pointer;" title="Ver detalle">
+                        <span style=" color: blue"><i class="bi bi-info-circle-fill"></i></span>
+                    </a>
+                    <a onclick="editInPopup('@Url.Action("Edit","Empleados",new{id = @empleado.PersonaId },Context.Request.Scheme)')" style="cursor: hand; cursor: pointer;" title="Editar">
+                        <span style=" color: brown"><i class="bi bi-pencil-fill"></i></span>
+                    </a>
+                    @if(Model.currentUser.RolName.ToLower() != empleado.Usuario.ToLower())
+                    {
+                        @if (@empleado.EsActivo)
+                        {
+                            <a onclick="estatusYEliminar('@Url.Action("Status","Empleados",new{id = @empleado.PersonaId },Context.Request.Scheme)','dar de baja')" style="cursor: hand; cursor: pointer;" title="Dar de baja">
+                                <span><i class="bi bi-dash-circle-fill"></i></span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a onclick="estatusYEliminar('@Url.Action("Status","Empleados",new{id = @empleado.PersonaId },Context.Request.Scheme)','re-activar')" style="cursor: hand; cursor: pointer;" title="Re-activar">
+                                <span style=" color: green"><i class="bi bi-check-circle-fill"></i></span>
+                            </a>
+                        }
+                        <a onclick="estatusYEliminar('@Url.Action("Delete","Empleados",new{id = @empleado.PersonaId },Context.Request.Scheme)','eliminar')" style="cursor: hand; cursor: pointer;" title="Eliminar">
+                            <span style=" color: red"><i class="bi bi-trash-fill"></i></span>
+                        </a>
+                    }                    
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@*CÓDIGO PARA EL PAGINADOR DE REGISTROS*@
+@if (Model.empleados.PageCount > 0)
+{
+    <span>
+        <strong>@Model.empleados.RowsCount</strong> registros encontrados
+    </span>
+    <span>&nbsp;|&nbsp;</span>
+    <span>
+        Página <strong>@(Model.empleados.CurrentPage)</strong> de
+        <strong>@Model.empleados.PageCount</strong>
+    </span>
+    <span>&nbsp;|&nbsp;</span>
+}
+else
+{
+    <span>No hay resultados para esta búsqueda</span>
+    <span>&nbsp;|&nbsp;</span>
+}
+@if (Model.empleados.CurrentPage > 1)
+{
+    @Html.ActionLink("<<", "GetEmpleados", new { page = 1 }, new { @class = "btn btn-sm btn-primary" })
+    <span></span>
+    @Html.ActionLink("Anterior", "GetEmpleados", new { page = Model.empleados.CurrentPage - 1 }, new { @class = "btn btn-sm btn-primary" })
+}
+else
+{
+    @Html.ActionLink("<<", "GetEmpleados", new { page = 1 }, new { @class = "btn btn-sm btn-primary disabled" })
+    <span></span>
+    @Html.ActionLink("Anterior", "GetEmpleados", new { page = 1 }, new { @class = "btn btn-sm btn-primary disabled" })
+}
+<span></span>
+@if (@Model.empleados.CurrentPage < @Model.empleados.PageCount)
+{
+    @Html.ActionLink("Siguiente", "GetEmpleados", new { page = Model.empleados.CurrentPage + 1 }, new { @class = "btn btn-sm btn-primary" })
+    <span></span>
+    @Html.ActionLink(">>", "GetEmpleados", new { page = Model.empleados.PageCount }, new { @class = "btn btn-sm btn-primary" })
+}
+else
+{
+    @Html.ActionLink("Siguiente", "GetEmpleados", new { page = Model.empleados.PageCount - 1 }, new { @class = "btn btn-sm btn-primary disabled" })
+    <span></span>
+    @Html.ActionLink(">>", "GetEmpleados", new { page = Model.empleados.PageCount }, new { @class = "btn btn-sm btn-primary disabled" })
+}
+<div id="myModal" class="modal " tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header bg-black justify-content-center">
+                <h5 class="modal-title text-white" id="myModalLabel">Registrar Empleado</h5>
+            </div>
+            <div class="modal-body">
+                <div id="modal-content">
+                    Cargando...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger close" data-dismiss="myModal">Cerrar <i class="bi bi-x-lg"></i></button>
+                <button type="button" class="btn btn-primary" data-dismiss="myModal" id="btnSave">Guardar <i class="bi bi-floppy-fill"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myModalDet" class="modal " tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header bg-black justify-content-center">
+                <h5 class="modal-title text-white" id="myModalLabel">Detalle del Empleado</h5>
+            </div>
+            <div class="modal-body">
+                <div id="modal-contentD">
+                    Cargando...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger close" data-dismiss="myModalDet">Cerrar <i class="bi bi-x-lg"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myModalEdit" class="modal " tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header bg-black justify-content-center">
+                <h5 class="modal-title text-white" id="myModalLabel">Actualizar Empleado</h5>
+            </div>
+            <div class="modal-body">
+                <div id="modal-contentE">
+                    Cargando...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger close" data-dismiss="myModalEdit" id="btnCerrarE">Cerrar <i class="bi bi-x-lg"></i></button>
+                <button type="button" class="btn btn-primary" data-dismiss="myModalEdit" id="btnEdit">Guardar <i class="bi bi-floppy-fill"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/empleado/empleado.js"></script>
+}

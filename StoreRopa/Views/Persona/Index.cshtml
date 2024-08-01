@@ -1,101 +1,134 @@
-﻿@model IEnumerable<StoreRopa.Models.Persona>
+﻿@model StoreRopa.Models.utils.PagedResult<Persona>
 @{
     ViewData["Title"] = "Clientes";
 }
+@Html.AntiForgeryToken()
 <div class="alert-primary text-center">
     <h1 class="justify-content-center">@Html.ViewData["Title"]</h1>
 </div>
-
 <div class="row">
-    <div class="Col-mod-12">
-        <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#add-person" data-url="@Url.Action("Create")">
-            Nuevo
-        </button>
+    <div class="row g-3">
+        <div class="col-sm">
+            <div class="form-outline">
+                <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#add-person" data-url="@Url.Action("Create")">
+                    Agregar <i class="bi bi-plus-circle"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="form-outline"></div>
+        </div>
+        <div class="col-sm">
+            <div class="form-outline">
+                <input id="txtBuscar" class="form-control" placeholder="Buscar registro" />
+            </div>
+        </div>       
     </div>
 </div>
-<div class="container">
-<div class="table-responsive">
-    <table class="table">
-    <thead>
+<br />
+<table class="table table-bordered table-hover" id="dataTab">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nombres)
-            </th>           
-            <th>
-                @Html.DisplayNameFor(model => model.Curp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaNacimiento)
-            </th>
-           @* <th>
-                @Html.DisplayNameFor(model => model.persona.Ciudad)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.persona.Pais)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.persona.Direccion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.persona.Numero)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.persona.Cp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.persona.Telefono)
-            </th>*@
+            <th>#</th>
+            <th> @Html.DisplayName("Nombre")</th>
+            <th> @Html.DisplayName("Saldo")</th>
+            <th> @Html.DisplayName("Curp")</th>
+            <th> @Html.DisplayName("Fecha de Nacimiento")</th>
+            <th> @Html.DisplayName("Dirección")</th>
+            <th> @Html.DisplayName("Acción")</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombres) @Html.DisplayFor(modelItem => item.ApPaterno) @Html.DisplayFor(modelItem => item.ApMaterno)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Curp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaNacimiento)
-            </td>
-            @*<td>
-                @Html.DisplayFor(modelItem => item.persona.Ciudad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.persona.Pais)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.persona.Direccion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.persona.Numero)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.persona.Cp)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.persona.Telefono)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.persona.Id">Edita</a>
-                @Html.ActionLink("Details", "Details", new { id = item.persona.Id }) |
-                @Html.ActionLink("Edit", "Edit", new { id = item.persona.Id }) |
-                @Html.ActionLink("Status", "Status", new { id = item.persona.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.persona.Id })
-            </td>*@
-        </tr>
-}
+        @{
+            var i = 1;
+        }
+        @foreach (var cliente in Model.Results)
+        {
+            var rowNo = (Model.CurrentPage - 1) * Model.PageSize + i;
+            i++;
+            <tr class="bus">
+                <td>@rowNo</td>
+                <td>@cliente.Nombres @cliente.ApPaterno @cliente.ApMaterno</td>
+                <td>@cliente.Cliente.Saldo.ToString("C2")</td>
+                <td>@cliente.Curp</td>
+                <td>@(String.Format("{0:dd/MM/yyyy}", @cliente.FechaNacimiento))</td>
+                <td>@cliente.Direccion</td>
+                <td>
+                    <a onclick="showInPopup('@Url.Action("Detail","Persona",new{id = @cliente.Id },Context.Request.Scheme)')" style="cursor: hand; cursor: pointer;" title="Ver detalle">
+                        <span style=" color: blue"><i class="bi bi-info-circle-fill"></i></span>
+                    </a>
+                    <a onclick="editInPopup('@Url.Action("Edit","Persona",new{id = @cliente.Id },Context.Request.Scheme)')" style="cursor: hand; cursor: pointer;" title="Editar">
+                        <span style=" color: brown"><i class="bi bi-pencil-fill"></i></span>
+                    </a>
+                    @if (@cliente.EsActivo)
+                    {
+                        <a onclick="estatusYEliminar('@Url.Action("Status","Persona",new{id = @cliente.Id },Context.Request.Scheme)','dar de baja')" style="cursor: hand; cursor: pointer;" title="Dar de baja">
+                            <span><i class="bi bi-dash-circle-fill"></i></span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a onclick="estatusYEliminar('@Url.Action("Status","Persona",new{id = @cliente.Id },Context.Request.Scheme)','re-activar')" style="cursor: hand; cursor: pointer;" title="Re-activar">
+                            <span style=" color: green"><i class="bi bi-check-circle-fill"></i></span>
+                        </a>
+                    }
+                    <a onclick="estatusYEliminar('@Url.Action("Delete","Persona",new{id = @cliente.Id },Context.Request.Scheme)','eliminar')" style="cursor: hand; cursor: pointer;" title="Eliminar">
+                        <span style=" color: red"><i class="bi bi-trash-fill"></i></span>
+                    </a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-</div>
-</div>
+@*CÓDIGO PARA EL PAGINADOR DE REGISTROS*@
+@if (Model.PageCount > 0)
+{
+    <span>
+        <strong>@Model.RowsCount</strong> registros encontrados
+    </span>
+    <span>&nbsp;|&nbsp;</span>
+    <span>
+        Página <strong>@(Model.CurrentPage)</strong> de
+        <strong>@Model.PageCount</strong>
+    </span>
+    <span>&nbsp;|&nbsp;</span>
+}
+else
+{
+    <span>No hay resultados para esta búsqueda</span>
+    <span>&nbsp;|&nbsp;</span>
+}
+@if (Model.CurrentPage > 1)
+{
+    @Html.ActionLink("<<", "GetClientes", new { page = 1 }, new { @class = "btn btn-sm btn-primary" })
+    <span></span>
+    @Html.ActionLink("Anterior", "GetClientes", new { page = Model.CurrentPage - 1 }, new { @class = "btn btn-sm btn-primary" })
+}
+else
+{
+    @Html.ActionLink("<<", "GetClientes", new { page = 1 }, new { @class = "btn btn-sm btn-primary disabled" })
+    <span></span>
+    @Html.ActionLink("Anterior", "GetClientes", new { page = 1 }, new { @class = "btn btn-sm btn-primary disabled" })
+}
+<span></span>
+@if (@Model.CurrentPage < @Model.PageCount)
+{
+    @Html.ActionLink("Siguiente", "GetClientes", new { page = Model.CurrentPage + 1 }, new { @class = "btn btn-sm btn-primary" })
+    <span></span>
+    @Html.ActionLink(">>", "GetClientes", new { page = Model.PageCount }, new { @class = "btn btn-sm btn-primary" })
+}
+else
+{
+    @Html.ActionLink("Siguiente", "GetClientes", new { page = Model.PageCount - 1 }, new { @class = "btn btn-sm btn-primary disabled" })
+    <span></span>
+    @Html.ActionLink(">>", "GetClientes", new { page = Model.PageCount }, new { @class = "btn btn-sm btn-primary disabled" })
+}
 <div id="myModal" class="modal " tabindex="-1" role="dialog"
      aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content">
             <div class="modal-header bg-black justify-content-center">
-                <h5 class="modal-title text-white" id="myModalLabel">Registrar Cliente</h5>                
+                <h5 class="modal-title text-white" id="myModalLabel">Registrar Cliente</h5>
             </div>
             <div class="modal-body">
                 <div id="modal-content">
@@ -103,15 +136,50 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger close" data-dismiss="myModal">Cerrar</button>
-                <button type="button" class="btn btn-primary" data-dismiss="myModal" id="btnSave">Guardar</button>
+                <button type="button" class="btn btn-danger close" data-dismiss="myModal">Cerrar <i class="bi bi-x-lg"></i></button>
+                <button type="button" class="btn btn-primary" data-dismiss="myModal" id="btnSave">Guardar <i class="bi bi-floppy-fill"></i></button>
             </div>
         </div>
     </div>
 </div>
-
-@section scripts
-{
+<div id="myModalDet" class="modal " tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header bg-black justify-content-center">
+                <h5 class="modal-title text-white" id="myModalLabel">Detalle del Cliente</h5>
+            </div>
+            <div class="modal-body">
+                <div id="modal-contentD">
+                    Cargando...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger close" data-dismiss="myModalDet">Cerrar <i class="bi bi-x-lg"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myModalEdit" class="modal " tabindex="-1" role="dialog"
+     aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header bg-black justify-content-center">
+                <h5 class="modal-title text-white" id="myModalLabel">Actualizar Cliente</h5>
+            </div>
+            <div class="modal-body">
+                <div id="modal-contentE">
+                    Cargando...
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger close" data-dismiss="myModalEdit" id="btnCerrarE">Cerrar <i class="bi bi-x-lg"></i></button>
+                <button type="button" class="btn btn-primary" data-dismiss="myModalEdit" id="btnEdit">Guardar <i class="bi bi-floppy-fill"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="~/js/persona/persona.js"></script>
 }

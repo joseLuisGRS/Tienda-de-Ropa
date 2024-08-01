@@ -1,4 +1,4 @@
-﻿@model StoreRopa.Models.Vo.PersonaCliente
+﻿@model StoreRopa.Models.Vo.PersonaClienteVO
 
 <div class="row">
     <form asp-action="Create" onKeyPress="if (event.keyCode == 13) event.returnValue = false; ">
@@ -58,16 +58,16 @@
                 <div class="row g-3">
                     <div class="col-sm">
                         <div class="form-outline">
-                            <label asp-for="persona.Ciudad" class="control-label"></label>
-                            <input asp-for="persona.Ciudad" class="form-control" onkeypress="return onlyLetras(event);" />
-                            <span asp-validation-for="persona.Ciudad" class="text-danger"></span>
+                            <label asp-for="persona.Municipio" class="control-label"></label>
+                            <input asp-for="persona.Municipio" class="form-control" onkeypress="return onlyLetras(event);" />
+                            <span asp-validation-for="persona.Municipio" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-sm">
                         <div class="form-outline">
-                            <label asp-for="persona.Pais" class="control-label"></label>
-                            <input asp-for="persona.Pais" class="form-control" onkeypress="return onlyLetras(event);" />
-                            <span asp-validation-for="persona.Pais" class="text-danger"></span>
+                            <label asp-for="persona.Estado" class="control-label"></label>
+                            <input asp-for="persona.Estado" class="form-control" onkeypress="return onlyLetras(event);" />
+                            <span asp-validation-for="persona.Estado" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-sm">
@@ -101,7 +101,7 @@
                 <div class="col-sm">
                     <div class="form-outline">
                         <label asp-for="cliente.TipoVenta" class="control-label"></label>
-                        <select asp-for="cliente.TipoVenta" >
+                        <select class="form-select form-select-sm"  asp-for="cliente.TipoVenta">
                             <option value="">Seleccione</option>
                             <option value="1">Contado</option>
                             <option value="2">Crédito</option>
@@ -109,6 +109,8 @@
                         <span asp-validation-for="cliente.TipoVenta" class="text-danger"></span>
                     </div>
                 </div>
+                <div class="col-sm"><div class="form-outline"></div></div>
+                <div class="col-sm"><div class="form-outline"></div></div>
             </div>
 
         </div>

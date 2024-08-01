@@ -1,0 +1,147 @@
+﻿@model StoreRopa.Models.Vo.PersonaEmpleadoVO
+
+<div class="row">
+    <form asp-action="Create" onKeyPress="if (event.keyCode == 13) event.returnValue = false; ">
+        <div class="row">
+            <input type="hidden" id="txtExito" name="txtExito" value="@Html.ViewBag.Exito" />
+            <input type="hidden" id="txtErrorMessage" name="txtErrorMessage" value="@Html.ViewData["error"]" />
+            <div id="error" class="ui-state-error"></div>
+            <div class="row g-3">
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="persona.Nombres" class="control-label"></label>
+                        <input asp-for="persona.Nombres" class="form-control" onkeypress="return onlyLetras(event);" />
+                        <span asp-validation-for="persona.Nombres" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="persona.ApPaterno" class="control-label"></label>
+                        <input asp-for="persona.ApPaterno" class="form-control" onkeypress="return onlyLetras(event);" />
+                        <span asp-validation-for="persona.ApPaterno" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="persona.ApMaterno" class="control-label"></label>
+                        <input asp-for="persona.ApMaterno" class="form-control" onkeypress="return onlyLetras(event);" />
+                        <span asp-validation-for="persona.ApMaterno" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="persona.Curp" class="control-label"></label>
+                        <input asp-for="persona.Curp" class="form-control" onkeypress="return letrasNumeros(event);" onkeyup="this.value = upper(this.value)" />
+                        <span asp-validation-for="persona.Curp" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="persona.FechaNacimiento" class="control-label"></label>
+                        <input asp-for="persona.FechaNacimiento" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" id="fechaNacimiento" />
+                        <span asp-validation-for="persona.FechaNacimiento" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="persona.Telefono" class="control-label"></label>
+                        <input asp-for="persona.Telefono" class="form-control" id="txtCel" onkeypress="return validar('txtCel',10);"
+                               onkeydown="return onlyNumbers(event);" />
+                        <span asp-validation-for="persona.Telefono" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="persona.Municipio" class="control-label"></label>
+                        <input asp-for="persona.Municipio" class="form-control" onkeypress="return onlyLetras(event);" />
+                        <span asp-validation-for="persona.Municipio" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="persona.Estado" class="control-label"></label>
+                        <input asp-for="persona.Estado" class="form-control" onkeypress="return onlyLetras(event);" />
+                        <span asp-validation-for="persona.Estado" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="persona.Cp" class="control-label"></label>
+                        <input asp-for="persona.Cp" class="form-control" id="txtCp" onkeypress="return validar('txtCp',5)"
+                               onkeydown="return onlyNumbers(event);" />
+                        <span asp-validation-for="persona.Cp" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-sm-8">
+                    <div class="form-outline">
+                        <label asp-for="persona.Direccion" class="control-label"></label>
+                        <input asp-for="persona.Direccion" class="form-control" />
+                        <span asp-validation-for="persona.Direccion" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-outline">
+                        <label asp-for="persona.Numero" class="control-label"></label>
+                        <input asp-for="persona.Numero" class="form-control" />
+                        <span asp-validation-for="persona.Numero" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="empleado.Usuario" class="control-label"></label>
+                        <input asp-for="empleado.Usuario" class="form-control" onkeypress="return onlyLetras(event);" />
+                        <span asp-validation-for="empleado.Usuario" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="empleado.Password" class="control-label"></label>
+                        <input type="password" asp-for="empleado.Password" class="form-control" />
+                        <span asp-validation-for="empleado.Password" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="ConfirmaPwd" class="control-label"></label>
+                        <input type="password" asp-for="ConfirmaPwd" class="form-control" />
+                        <span asp-validation-for="ConfirmaPwd" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-sm">
+                    <div class="form-outline">
+                        <label asp-for="RolId" class="control-label"></label>
+                        <select class="form-select form-select-sm" asp-items="@(new SelectList(Model.roles, "Id", "Nombre"))" asp-for="RolId">
+                            <option value="">Seleccione</option>
+                        </select>
+                        <span asp-validation-for="RolId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-sm"><div class="form-outline"></div></div>
+                <div class="col-sm"><div class="form-outline"></div></div>
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_Create");
+    }
+}

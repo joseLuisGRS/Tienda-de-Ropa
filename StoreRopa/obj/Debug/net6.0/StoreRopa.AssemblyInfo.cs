@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StoreRopa")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+21ecfb8b0b248a916b365a0e9cfeb6e814b45d4e")]
 [assembly: System.Reflection.AssemblyProductAttribute("StoreRopa")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StoreRopa")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
