@@ -120,6 +120,10 @@ $("#btnSeleccionar").click(function (eve) {
     }    
 });
 function DatosIniciales() {
+    $("#btnVender").prop('disabled', true);
+    $("#btnCancelar").prop('disabled', true);
+    $("#txtCantidadRecibida").val("");
+    $("#txtPendientePago").val("");
     $("#divDatosVenta").hide();
     $("#VentaClienteId").val("");
     $("#NombreCliente").val("");
@@ -146,10 +150,23 @@ function ValidaCheckTipoVenta() {
         case 'contado':
             $("#divPendientePago").hide();
             $(".abonoArticulo").css("display", "none");
+            var filas = $("#tablaArticulos").find('tbody tr').length;
+            if (filas == 0) {                
+                $("#btnCancelar").prop('disabled', true);
+            }
+            $("#btnVender").prop('disabled', true);
             break;
         case 'credito':
             $("#divPendientePago").show();
             $(".abonoArticulo").css("display", "block");
+            var filas = $("#tablaArticulos").find('tbody tr').length;
+            if (filas == 0) {
+                $("#btnVender").prop('disabled', true);
+                $("#btnCancelar").prop('disabled', true);
+            } else {
+                $("#btnVender").prop('disabled', false);
+                $("#btnCancelar").prop('disabled', false);
+            }
             break;
     }
 }
@@ -218,11 +235,13 @@ $("#btnAgregar").click(function (eve) {
         $(".abonoArticulo").css("display", "none");
     } else {
         $(".abonoArticulo").css("display", "block");
+        $("#btnVender").prop('disabled', false);
     }
     $('#txtPendientePago').val(parseFloat($('#txtImporteVenta').val() - $('#txtAbonoVenta').val()).toFixed(2));
     $("#tablaArticulos tbody tr input").each(function () {
         $(this).val(parseFloat(0.00).toFixed(2));
     });
+    $("#btnCancelar").prop('disabled', false);
 });
 function DecimalLongitud(event, txt) {
     var splitTxt = $(txt).val().split('.');
@@ -266,7 +285,7 @@ function formateaMoneda(txt,fila) {
 function agregarFila() {   
     var fila = $("#tablaArticulos").find('tbody tr').length;
     var txt = "<div class='col col-lg-2'> <div class='form-outline'> <input type='text' class='form-control-sm' " +
-        "id='txtAbonoArticulo' onkeypress = 'return DecimalLongitud(event, this);' onblur = 'formateaMoneda(this," + fila + ")'" +
+        "id='txtAbonoArticulo' readonly onkeypress = 'return DecimalLongitud(event, this);' onblur = 'formateaMoneda(this," + fila + ")'" +
         "data-val-number='La cantidad es incorrecta!' value='0.00'/> <span asp-validation-for='txtAbonoArticulo''" +
         " id='spAbonoArticulo" + fila + "' class='text-danger'></span></div> </div>";
     var boton = ' <a class="borrar" style="cursor: hand; cursor: pointer;" title="Eliminar Articulo">' +
@@ -348,13 +367,13 @@ function calculaPago() {
         }
         if (renglon[0] >= cantidad) {
             if ((i == (cantidades.length - 2)) && cantidades.length > 2) {
-                cantidadesAux.push(renglon[0] + "-" + renglon[1] + "-" + cantidad);
+                cantidadesAux.push(renglon[0] + "-" + renglon[1] + "-" + parseFloat(cantidad));
                 registrado += parseFloat(cantidad);
                 cantidadAux = parseFloat($('#txtAbonoVenta').val()) - registrado;
                 modificaCantidad = true;
             }
             else {
-                cantidadesAux.push(renglon[0] + "-" + renglon[1] + "-" + cantidad);
+                cantidadesAux.push(renglon[0] + "-" + renglon[1] + "-" + parseFloat(cantidad));
                 registrado += parseFloat(cantidad);
             }
 
@@ -391,7 +410,8 @@ function calculaPago() {
             let linea = cantidadesAux[i].split('-');
             if (parseInt(linea[1]) == renglon) {
                 $(this).val(parseFloat(linea[2]).toFixed(2));
-                totAbono += parseFloat(linea[2]);
+                let abono = parseFloat(linea[2]).toFixed(2);
+                totAbono += parseFloat(abono);
                 break;
             }
 
@@ -468,7 +488,13 @@ $("#btnVender").click(function (eve) {
             return;
         }
     }
-    
+
+    if (!$('#txtCantidadRecibida').valid()) {
+        return;
+    }
+
+    validaCantidadRecibida(); 
+
     const venta = {
         ClienteId: parseInt($("#VentaClienteId").text()),
         ImporteVenta: parseFloat($("#txtImporteVenta").val()),
@@ -581,3 +607,41 @@ $("#btnVender").click(function (eve) {
     });   
 
 });
+
+$('#txtCantidadRecibida').on('blur', function () {
+    validaCantidadRecibida(); 
+});
+
+function validaCantidadRecibida(){
+    $('#txtCantidadRecibida').val(ParseFloatTwoDigits($('#txtCantidadRecibida').val()));
+    let cantidadRecibida = $('#txtCantidadRecibida').val();
+    let importeVenta = ParseFloatTwoDigits($('#txtImporteVenta').val());
+    let abonoVenta = ParseFloatTwoDigits($('#txtAbonoVenta').val());
+
+    if (Number.parseFloat(cantidadRecibida) < Number.parseFloat(abonoVenta)) {
+        var sp = $("#spCantidadRecibida");
+        sp.html("Cantidad recibida incorrecta!");
+        return;
+    }
+
+    if (Number.parseFloat(cantidadRecibida) > 0 && Number.parseFloat(importeVenta) <= 0) {
+        var sp = $("#spCantidadRecibida");
+        sp.html("Cantidad recibida incorrecta!");
+        return;
+    }
+
+    if (Number.parseFloat(cantidadRecibida) > Number.parseFloat(abonoVenta) ) {
+        var sp = $("#spCantidadRecibida");
+        sp.html("Cantidad recibida incorrecta!");
+        return;
+    }
+
+    if ($('input[name=TipoVenta]:checked', '#frmVentas').val() == 'contado') {
+        if (Number.parseFloat(cantidadRecibida) > 0 && Number.parseFloat(importeVenta) > 0 &&
+            Number.parseFloat(abonoVenta) <= 0) {
+            var sp = $("#spCantidadRecibida");
+            sp.html("Cantidad recibida incorrecta!");
+            return;
+        }
+    }
+}

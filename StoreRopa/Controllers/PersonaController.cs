@@ -70,6 +70,7 @@ namespace StoreRopa.Controllers
             ModelState.Remove("persona.Cliente");
             ModelState.Remove("cliente.Persona");
             ModelState.Remove("persona.Empleado");
+            ModelState.Remove("cliente.Ventas");
             if (ModelState.IsValid)
             {
                 try {
@@ -186,6 +187,7 @@ namespace StoreRopa.Controllers
             ModelState.Remove("persona.Cliente.Persona");
             ModelState.Remove("cliente");
             ModelState.Remove("persona.Empleado");
+            ModelState.Remove("persona.Cliente.Ventas");
             if (ModelState.IsValid)
             {
                 try

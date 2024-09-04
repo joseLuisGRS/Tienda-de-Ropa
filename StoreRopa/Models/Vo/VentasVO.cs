@@ -26,5 +26,10 @@ namespace StoreRopa.Models.Vo
 
         public string TipoVenta { get; set; } = null!;
 
+        [DisplayFormat(DataFormatString = "{0:C2}")]
+        [Display(Name = "Cantidad Recibida")]
+        [Required(ErrorMessage = "La {0} es obligatoria.")]
+        public decimal CantidadRecibida { get; set; }
+
     }
 }

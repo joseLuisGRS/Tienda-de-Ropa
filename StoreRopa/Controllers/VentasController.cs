@@ -23,13 +23,14 @@ namespace StoreRopa.Controllers
         /// Método principal para cargar la pantalla de ventas
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            ViewData["Clientes"] = this._unitOfWork.ClientesRepository.GetClientesPersona().Select(e => new SelectListItem
+            ViewData["Clientes"] = _unitOfWork.ClientesRepository.GetClientesPersona().Select(e => new SelectListItem
             {
                 Value = e.Id.ToString(),
                 Text = e.Persona.Nombres + " " + e.Persona.ApPaterno + " " + e.Persona.ApMaterno
             }).ToList();
+            ViewBag.Exito = "-1";
             return View(new VentasVO());
         }
 
@@ -95,12 +96,17 @@ namespace StoreRopa.Controllers
             int resultado = Constantes.ERROR;
             try
             {
-                Cliente client = await this._unitOfWork.ClientesRepository.GetById(venta.Venta.ClienteId);
-                if (client == null)
+                if (ModelState.IsValid)
                 {
-                    throw new CustomException("El cliente no existe.");
+                    Cliente client = await this._unitOfWork.ClientesRepository.GetById(venta.Venta.ClienteId);
+                    if (client == null)
+                    {
+                        throw new CustomException("El cliente no existe.");
+                    }
+                    resultado = Constantes.EXITO;
                 }
-                resultado = Constantes.EXITO;
+                ViewBag.Exito = Constantes.ERROR;
+                //return PartialView("Clientes", personas);
             }
             catch (CustomException e)
             {

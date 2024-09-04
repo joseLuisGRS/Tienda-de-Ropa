@@ -163,24 +163,28 @@
                         </div>
                     </div>
                     
-                    <div class="col col-lg-2">
+                    <div class="col col-lg-4">
                         <div class="form-outline">
                             <br />
                             <button type="button" class="btn btn-outline-primary btn-sm my-1" id="btnAgregar">
                                 Agregar <i class="bi bi-cart-plus"></i>
                             </button>
+                            <button type="button" class="btn btn-outline-danger btn-sm ms-5 my-1" id="btnCancelar">
+                                Cancelar<i class="bi bi-trash-fill"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm my-1" id="btnVender">
+                                Vender <i class="bi bi-check2-circle"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <div class="col col-lg-4">
-                        <div class="form d-flex pt-4">
-                            <br />
-                            <button type="button" class="btn btn-outline-danger btn-sm my-1" id="btnCancelar">
-                                Cancelar Venta <i class="bi bi-trash-fill"></i>
-                            </button>
-                            <button type="button" class="btn btn-outline-primary btn-sm mx-2 my-1" id="btnVender">
-                                Realizar Venta <i class="bi bi-check2-circle"></i>
-                            </button>
+                    <div class="col col-lg-2">
+                        <div class="form-outline">
+                            <label asp-for="CantidadRecibida" class="control-label"></label>
+                            <input asp-for="CantidadRecibida" id="txtCantidadRecibida" class="form-control"
+                                   onkeypress="return validar('txtCantidadRecibida',10)" onkeydown="return Decimal(this);"
+                                   data-val-number="La cantidad recibida incorrecta." />
+                            <span asp-validation-for="CantidadRecibida" id="spCantidadRecibida" class="text-danger"></span>
                         </div>
                     </div>
 
