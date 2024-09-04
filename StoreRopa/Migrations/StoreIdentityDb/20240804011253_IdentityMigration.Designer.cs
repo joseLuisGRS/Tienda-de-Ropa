@@ -9,11 +9,11 @@ using StoreRopa.Data;
 
 #nullable disable
 
-namespace StoreRopa.Migrations
+namespace StoreRopa.Migrations.StoreIdentityDb
 {
     [DbContext(typeof(StoreIdentityDbContext))]
-    [Migration("20240720004555_ImplementsIdentity")]
-    partial class ImplementsIdentity
+    [Migration("20240804011253_IdentityMigration")]
+    partial class IdentityMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

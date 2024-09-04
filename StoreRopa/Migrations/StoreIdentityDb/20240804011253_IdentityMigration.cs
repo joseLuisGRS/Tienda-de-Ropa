@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace StoreRopa.Migrations
+namespace StoreRopa.Migrations.StoreIdentityDb
 {
     /// <inheritdoc />
-    public partial class ImplementsIdentity : Migration
+    public partial class IdentityMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

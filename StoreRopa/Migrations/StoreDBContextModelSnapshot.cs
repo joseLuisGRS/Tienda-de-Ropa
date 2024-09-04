@@ -8,7 +8,7 @@ using StoreRopa.Data;
 
 #nullable disable
 
-namespace StoreRopa.Migrations.StoreDB
+namespace StoreRopa.Migrations
 {
     [DbContext(typeof(StoreDBContext))]
     partial class StoreDBContextModelSnapshot : ModelSnapshot
