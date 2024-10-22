@@ -18,7 +18,9 @@ namespace StoreRopa.Data.Repository
         public IClientesRepository ClientesRepository => new ClientesRepository(_context);
         public IRolesRepository RolesRepository => new RolesRepository(_context, _currentUser);
         public IEmpleadosRepository EmpleadosRepository => new EmpleadosRepository(_context, _currentUser);
-
+        public IVentaRepository VentaRepository => new VentaRepository(_context);
+        public IDetalleVentaRepository DetalleVentaRepository => new DetalleVentaRepository(_context);
+        public ICreditosRepository CreditosRepository => new CreditosRepository(_context);
         public void Dispose()
         {
             if (_context != null)

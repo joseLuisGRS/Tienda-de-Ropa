@@ -12,8 +12,8 @@ using StoreRopa.Data;
 namespace StoreRopa.Migrations.StoreIdentityDb
 {
     [DbContext(typeof(StoreIdentityDbContext))]
-    [Migration("20240804011253_IdentityMigration")]
-    partial class IdentityMigration
+    [Migration("20240907004516_InitMigrationUsers")]
+    partial class InitMigrationUsers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -7,6 +7,7 @@
         public string UserName { get; set; } = "";
         public string RolName { get; set; }
         public Int32 RolId { get; set; }
+        public Int32 IdPersona { get; set; }
 
     }
 }

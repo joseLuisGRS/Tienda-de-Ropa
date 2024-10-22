@@ -12,7 +12,7 @@ using StoreRopa.Data;
 namespace StoreRopa.Migrations
 {
     [DbContext(typeof(StoreDBContext))]
-    [Migration("20240804011138_InitMigration")]
+    [Migration("20240907004422_InitMigration")]
     partial class InitMigration
     {
         /// <inheritdoc />

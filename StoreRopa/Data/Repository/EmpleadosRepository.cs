@@ -103,5 +103,21 @@ namespace StoreRopa.Data.Repository
                 throw;
             }
         }
+        /// <summary>
+        /// Método para obtener persona Empleado by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Empleados> GetEmpleadoPersonaById(Int64? id)
+        {
+            try
+            {
+                return await _entities.AsNoTracking().Include(e => e.Persona).FirstOrDefaultAsync(e => e.Id == id);
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
     }
 }

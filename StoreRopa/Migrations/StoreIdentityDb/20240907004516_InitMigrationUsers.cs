@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StoreRopa.Migrations.StoreIdentityDb
 {
     /// <inheritdoc />
-    public partial class IdentityMigration : Migration
+    public partial class InitMigrationUsers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

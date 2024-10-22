@@ -53,7 +53,7 @@ namespace StoreRopa.Data.Repository
         }
 
         /// <summary>
-        /// Get Person and Cliente by id
+        /// Get Person and Cliente by id persona
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -70,7 +70,7 @@ namespace StoreRopa.Data.Repository
         }
 
         /// <summary>
-        /// método para recuperar persaona y empleado por id
+        /// método para recuperar persaona y empleado por id persona
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

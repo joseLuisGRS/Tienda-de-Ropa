@@ -25,8 +25,10 @@ namespace StoreRopa.Data.Extensions
             services.AddTransient<IClientesRepository, ClientesRepository>();
             services.AddTransient<IRolesRepository, RolesRepository>();
             services.AddTransient<IEmpleadosRepository, EmpleadosRepository>();
+            services.AddTransient<IVentaRepository, VentaRepository>();
+            services.AddTransient<IDetalleVentaRepository, DetalleVentaRepository>();
+            services.AddTransient<ICreditosRepository, CreditosRepository>();
             services.AddSingleton<CurrentUser>();
-
             return services;
         }
     }

@@ -151,14 +151,18 @@ function ValidaCheckTipoVenta() {
             $("#divPendientePago").hide();
             $(".abonoArticulo").css("display", "none");
             var filas = $("#tablaArticulos").find('tbody tr').length;
-            if (filas == 0) {                
+            if (filas == 0) {
                 $("#btnCancelar").prop('disabled', true);
+                $("#btnVender").prop('disabled', true);
             }
-            $("#btnVender").prop('disabled', true);
+            else {
+                $("#btnCancelar").prop('disabled', false);
+                $("#btnVender").prop('disabled', false);
+            }
             break;
         case 'credito':
             $("#divPendientePago").show();
-            $(".abonoArticulo").css("display", "block");
+            //$(".abonoArticulo").css("display", "block");
             var filas = $("#tablaArticulos").find('tbody tr').length;
             if (filas == 0) {
                 $("#btnVender").prop('disabled', true);
@@ -230,12 +234,12 @@ $("#btnAgregar").click(function (eve) {
     $("#tablaArticulos").show();    
     agregarFila();
     $("#txtAbonoVenta").prop("disabled", false);
-    $("#txtAbonoVenta").val("0");
     if ($('input[name=TipoVenta]:checked', '#frmVentas').val() == 'contado') {
         $(".abonoArticulo").css("display", "none");
     } else {
-        $(".abonoArticulo").css("display", "block");
+        //$(".abonoArticulo").css("display", "block");
         $("#btnVender").prop('disabled', false);
+        $("#txtAbonoVenta").val("0");
     }
     $('#txtPendientePago').val(parseFloat($('#txtImporteVenta').val() - $('#txtAbonoVenta').val()).toFixed(2));
     $("#tablaArticulos tbody tr input").each(function () {
@@ -299,6 +303,9 @@ function agregarFila() {
     if (isNaN(importe)) importe = 0;
     var total = (importe + parseFloat($("#txtPrecioVenta").val()));
     $("#txtImporteVenta").val(parseFloat(total).toFixed(2));
+    if ($('input[name=TipoVenta]:checked', '#frmVentas').val() == 'contado') {
+        $("#txtAbonoVenta").val(parseFloat(total).toFixed(2));
+    } 
     $("#txtDescripcion").val("");
     $("#txtTalla").val("");
     $("#txtColor").val("");
@@ -306,6 +313,7 @@ function agregarFila() {
     $("#txtPrecioArticulo").val("");
     $("#txtDescuento").val("");
     $("#txtPrecioVenta").val("");
+    $(".abonoArticulo").css("display", "none");
 }
 
 $(document).on('click', '.borrar', function (event) {
@@ -488,12 +496,15 @@ $("#btnVender").click(function (eve) {
             return;
         }
     }
-
-    if (!$('#txtCantidadRecibida').valid()) {
-        return;
+    if (parseFloat(abono) > 0) {
+        if (!$('#txtCantidadRecibida').valid() || parseFloat($('#txtCantidadRecibida').val()) <= 0) {
+            return;
+        }
     }
-
-    validaCantidadRecibida(); 
+   
+    if (!validaCantidadRecibida()) {
+        return;
+    } 
 
     const venta = {
         ClienteId: parseInt($("#VentaClienteId").text()),
@@ -506,7 +517,8 @@ $("#btnVender").click(function (eve) {
 
     const VentaVo = { 
         Venta:  venta ,
-        DetallesDeVentas:  []
+        DetallesDeVentas: [],
+        CantidadRecibida: parseInt($("#txtCantidadRecibida").val())
     }
 
     let renglon = 0;
@@ -618,22 +630,22 @@ function validaCantidadRecibida(){
     let importeVenta = ParseFloatTwoDigits($('#txtImporteVenta').val());
     let abonoVenta = ParseFloatTwoDigits($('#txtAbonoVenta').val());
 
-    if (Number.parseFloat(cantidadRecibida) < Number.parseFloat(abonoVenta)) {
-        var sp = $("#spCantidadRecibida");
-        sp.html("Cantidad recibida incorrecta!");
-        return;
-    }
-
     if (Number.parseFloat(cantidadRecibida) > 0 && Number.parseFloat(importeVenta) <= 0) {
         var sp = $("#spCantidadRecibida");
         sp.html("Cantidad recibida incorrecta!");
-        return;
+        return false;
     }
 
-    if (Number.parseFloat(cantidadRecibida) > Number.parseFloat(abonoVenta) ) {
+    if (Number.parseFloat(cantidadRecibida) > 0 && Number.parseFloat(abonoVenta) <=0 ) {
         var sp = $("#spCantidadRecibida");
         sp.html("Cantidad recibida incorrecta!");
-        return;
+        return false;
+    }
+
+    if (Number.parseFloat(cantidadRecibida) < Number.parseFloat(abonoVenta)) {
+        var sp = $("#spCantidadRecibida");
+        sp.html("Cantidad recibida incorrecta!");
+        return false;
     }
 
     if ($('input[name=TipoVenta]:checked', '#frmVentas').val() == 'contado') {
@@ -641,7 +653,10 @@ function validaCantidadRecibida(){
             Number.parseFloat(abonoVenta) <= 0) {
             var sp = $("#spCantidadRecibida");
             sp.html("Cantidad recibida incorrecta!");
-            return;
+            return false;
         }
     }
+
+    $("#btnVender").prop('disabled', false);
+    return true;
 }

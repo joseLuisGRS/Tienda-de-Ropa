@@ -33,6 +33,12 @@
             _currentUser.RolId = rolId;
             return this;
         }
+
+        public CurrentUser IdPersonaB(Int32 idPersona)
+        {
+            _currentUser.IdPersona = idPersona;
+            return this;
+        }
         public User Builder()
         {
             return _currentUser;

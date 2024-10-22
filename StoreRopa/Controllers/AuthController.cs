@@ -5,6 +5,7 @@ using StoreRopa.Data.Repository.Interfeces;
 using StoreRopa.Data.utils;
 using StoreRopa.Models;
 using StoreRopa.Models.Vo;
+using System.Data.SqlClient;
 
 namespace StoreRopa.Controllers
 {
@@ -17,9 +18,10 @@ namespace StoreRopa.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly CurrentUser _currentUser;
         private readonly IEmpleadosRepository _empleadosRepository;
+        private readonly IConfiguration _configuration;
         public AuthController(ILogger<AuthController> logger, IUnitOfWork unitOfWork, 
             UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, CurrentUser currentUser,
-            IEmpleadosRepository empleadosRepository)
+            IEmpleadosRepository empleadosRepository, IConfiguration configuration)
         {
             _logger = logger;
             _unitOfWork = unitOfWork;
@@ -27,6 +29,7 @@ namespace StoreRopa.Controllers
             _signInManager = signInManager;
             _currentUser = currentUser;
             _empleadosRepository = empleadosRepository;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -38,7 +41,6 @@ namespace StoreRopa.Controllers
         {
             try
             {
-                
                 return View("Index");
             }
             catch (Exception e)
@@ -60,26 +62,40 @@ namespace StoreRopa.Controllers
         public async Task<IActionResult> Auth(AuthVo authVo)
         {
             if (ModelState.IsValid)
-            {                
-                var result = await _signInManager.PasswordSignInAsync(authVo.Usuario, authVo.Password, isPersistent: false, lockoutOnFailure: false);
-                if (result.Succeeded)
+            {
+                try
                 {
-                    Empleados empleado = await _empleadosRepository.getEmpleadoAndRolByUser(authVo.Usuario);
-                    if (empleado != null)
+                    var result = await _signInManager.PasswordSignInAsync(authVo.Usuario, authVo.Password, isPersistent: false, lockoutOnFailure: false);
+                    if (result.Succeeded)
                     {
-                        _currentUser
+                        Empleados empleado = await _empleadosRepository.getEmpleadoAndRolByUser(authVo.Usuario);
+                        if (empleado != null)
+                        {
+                            _currentUser
                             .IdB(Int32.Parse(empleado.Id.ToString()))
                             .FullNameB(empleado.Persona.Nombres + " " + empleado.Persona.ApPaterno + " " + empleado.Persona.ApMaterno)
                             .UserNameB(authVo.Usuario)
                             .RolNameB(empleado.Rol.Nombre)
                             .RolIdB(Int32.Parse(empleado.Rol.Id.ToString()))
+                            .IdPersonaB(Int32.Parse(empleado.PersonaId.ToString()))
                             .Builder();
-                        return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
-                }
 
-                ViewData["errorSesion"] = "Usuario y/o contraseña incorrectos.!";
-            }            
+                    ViewData["errorSesion"] = "Usuario y/o contraseña incorrectos.!";
+                }
+                catch (SqlException e)
+                {
+                    _logger.LogCritical("Se presento un error en la BD: " + e.Message);
+                    ViewData["errorSesion"] = "Ocurrio un error en la  BD.!";
+                }
+                catch (Exception e)
+                {
+                    _logger.LogCritical("Se presento un error: " + e.Message);
+                    ViewData["errorSesion"] = "Ocurrio un error.!";
+                }
+            }           
             return PartialView("Index", authVo);
                         
         }
@@ -126,10 +142,10 @@ namespace StoreRopa.Controllers
         {
             try
             {
-                string rolName = "SuperAdmin";
-                string curp = "SUAU000101ABCDEF01";
-                string userName = "SuperAdmin";
-                string pwdUnHashed = "So9Ar1*c";
+                string rolName = Constantes.SUPER_ADMIN;
+                string curp = Constantes.SUPER_ADMIN_CURP;
+                string userName = Constantes.SUPER_ADMIN;
+                var pwdUnHashed = _configuration["Configuration:SuperAdminPwdUnHashed"];
 
                 //Add new role
                 Roles rolBd = await _unitOfWork.RolesRepository.getRolByName(rolName);
