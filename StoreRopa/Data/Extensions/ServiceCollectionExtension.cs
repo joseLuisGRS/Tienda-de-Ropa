@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StoreRopa.Data.Repository.Interfeces;
 using StoreRopa.Data.Repository;
-using StoreRopa.Models;
 using StoreRopa.Models.Vo;
 
 namespace StoreRopa.Data.Extensions
@@ -28,6 +27,7 @@ namespace StoreRopa.Data.Extensions
             services.AddTransient<IVentaRepository, VentaRepository>();
             services.AddTransient<IDetalleVentaRepository, DetalleVentaRepository>();
             services.AddTransient<ICreditosRepository, CreditosRepository>();
+            services.AddTransient<IAbonosRepository, AbonosRepository>();
             services.AddSingleton<CurrentUser>();
             return services;
         }

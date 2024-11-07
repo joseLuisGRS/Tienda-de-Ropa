@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using StoreRopa.Data.Repository.Interfeces;
@@ -18,7 +17,6 @@ namespace StoreRopa.Controllers
         private readonly IConfiguration _configuration;
         private readonly CurrentUser _currentUser;
         private readonly User _user;
-        private readonly UserManager<ApplicationUser> _userManager;
         private decimal _abonoInicial = 0;
         private decimal _abono = 0;
         private decimal _abonoRecibido = 0;

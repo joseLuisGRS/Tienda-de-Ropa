@@ -3,10 +3,9 @@ using System.Drawing.Printing;
 using System.Text;
 using System.Management;
 using StoreRopa.Models.Vo;
-using StoreRopa.Models;
 using StoreRopa.Data.Repository.Interfeces;
 
-public class Ticket
+public class TicketPago
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly Font _f8, _f8b, _f10, _f10b, _f14b;
@@ -19,18 +18,17 @@ public class Ticket
     private StringFormat _center;
     private StringFormat _right;
     private float _y = 0;
-    private GeneraVentaVO _venta;
-
-    public Ticket(IUnitOfWork unitOfWork, IConfiguration configuration, int longPaper, bool isTermic, GeneraVentaVO venta)
+    public TicketAbonoVO _ticketAbonoVO;
+    public TicketPago(IUnitOfWork unitOfWork, IConfiguration configuration, int longPaper, bool isTermic, TicketAbonoVO ticketAbonoVO)
     {
         _unitOfWork = unitOfWork;
         _configuration = configuration;
         _longPaper = longPaper * 15 + 240;
+        _ticketAbonoVO = ticketAbonoVO;
         if (isTermic)
         {
             _widthPaper = int.Parse(_configuration["Configuration:WidthPaperTer"]!.ToString());
         }
-        _venta = venta;
 
         _contenidoTicket = new StringBuilder();
         _pd = new PrintDocument();
@@ -91,7 +89,7 @@ public class Ticket
     {
         _pd.PrinterSettings.PrinterName = "Microsoft Print to PDF";
         _pd.PrinterSettings.PrintToFile = true;
-        _pd.PrinterSettings.PrintFileName = "ticket.pdf";
+        _pd.PrinterSettings.PrintFileName = "ticketPago.pdf";
     }
     private void pd_PrintPage(object sender, PrintPageEventArgs ev)
     {
@@ -112,62 +110,44 @@ public class Ticket
         DibujarTexto(g, storeDirection, _f10, centerMargin, addSizeFont(_f10), storeDirection.Length ,_center);
         string storePhone = _configuration["Configuration:StorePhone"]!.ToString();
         DibujarTexto(g, storePhone, _f10, centerMargin, addSizeFont(_f10), _center);
-        DibujarTexto(g, "Fecha: " + _venta.Venta.FechaAlta.ToShortDateString() + " hora: " 
-            + _venta.Venta.FechaAlta.ToShortTimeString(), _f8, rightMargin, addSizeFont(_f8), _right);
+        DibujarTexto(g, "Fecha: " + _ticketAbonoVO.FechaAbono.ToShortDateString() + " hora: " 
+            + _ticketAbonoVO.FechaAbono.ToShortTimeString(), _f8, rightMargin, addSizeFont(_f8), _right);
         
-        var empleado = _unitOfWork.EmpleadosRepository.GetEmpleadoPersonaById(long.Parse(_venta.Venta.UsuarioAlta));
-        DibujarTexto(g, "Venta no:  " + _venta.Venta.Id.ToString("D9") + " " + "Vendedor: " 
-            + Int64.Parse(_venta.Venta.UsuarioAlta).ToString("D5"), _f8, leftMargin, addSizeFont(_f8));
+        var empleado = _unitOfWork.EmpleadosRepository.GetEmpleadoPersonaById(long.Parse(_ticketAbonoVO.UsuarioAlta));
+        DibujarTexto(g, "Vendedor: " + Int64.Parse(_ticketAbonoVO.UsuarioAlta).ToString("D5"), _f8, leftMargin, addSizeFont(_f8));
         string vendedor = empleado.Result.Persona.Nombres + " " + empleado.Result.Persona.ApPaterno + " " + empleado.Result.Persona.ApMaterno;
         DibujarTexto(g, vendedor, _f8, leftMargin, addSizeFont(_f8), vendedor.Length);
-        var clienteVenta = _unitOfWork.ClientesRepository.GetClientePersonaById(_venta.Venta.ClienteId);
+        var clienteVenta = _unitOfWork.ClientesRepository.GetClientePersonaById(_ticketAbonoVO.ClienteId);
 
-        DibujarTexto(g, "Cliente:  " + _venta.Venta.ClienteId.ToString("D9"), _f8, leftMargin, addSizeFont(_f8));
+        DibujarTexto(g, "Cliente:  " + _ticketAbonoVO.ClienteId.ToString("D9"), _f8, leftMargin, addSizeFont(_f8));
         string cliente = clienteVenta.Result.Persona.Nombres + " " + clienteVenta.Result.Persona.ApPaterno + " " + 
             clienteVenta.Result.Persona.ApMaterno;
         DibujarTexto(g, cliente, _f8, leftMargin, addSizeFont(_f8), cliente.Length);
 
         DibujarTexto(g, "", _f8, leftMargin, addSizeFont(_f8));
         DibujarTexto(g, "Articulo", _f8b, leftMargin, addSizeFont(_f8b));
-        DibujarTexto(g, "Precio", _f8b, 170, _y, _right);
-        DibujarTexto(g, "Desc", _f8b, 210, _y, _right);
-        DibujarTexto(g, "Total", _f8b, rightMargin, _y, _right);
+        DibujarTexto(g, "Abono", _f8b, rightMargin, _y, _right);
 
-        decimal descuento = 0;
-        decimal total = 0;
-        foreach(DetalleVentas detVenta in _venta.DetallesDeVentas!)
+        foreach(DetalleAbonoVO detAbono in _ticketAbonoVO.DetalleAbonos!)
         {
-            string articulo = detVenta.Modelo + " " + detVenta.Descripcion + " " + detVenta.Color + " T." + detVenta.Talla;
-            DibujarTextoArticulo(g, articulo, _f8, leftMargin, addSizeFont(_f8));
-            DibujarTexto(g, detVenta.PrecioArticulo.ToString("C0"), _f8b, 170, addSizeFont(_f8), _right);
-            total += detVenta.PrecioArticulo;
-            DibujarTexto(g, detVenta.Descuento.ToString("C0"), _f8b, 210, _y, _right);
-            descuento += detVenta.Descuento;
-            DibujarTexto(g, detVenta.PrecioVenta.ToString("C0"), _f8b, rightMargin, _y, _right);
+            DibujarTextoArticulo(g, detAbono.Articulo + " Venta no. " + detAbono.VentaId.ToString("D9"), _f8, leftMargin, addSizeFont(_f8));
+            DibujarTexto(g, detAbono.Abono.ToString("C2"), _f8b, rightMargin, _y, _right);
         }
         DibujarTexto(g, "", _f8, leftMargin, addSizeFont(_f8));
-        DibujarTexto(g, "Total", _f8, leftMargin, addSizeFont(_f8));
-        DibujarTexto(g, total.ToString("C0"), _f8, rightMargin, _y, _right);
-        DibujarTexto(g, "Desc", _f8, leftMargin, addSizeFont(_f8));
-        DibujarTexto(g, descuento.ToString("C0"), _f8, rightMargin, _y, _right);
-        DibujarTexto(g, "Total a pagar", _f8, leftMargin, addSizeFont(_f8));
-        DibujarTexto(g, _venta.Venta.ImporteVenta.ToString("C0"), _f8, rightMargin, _y, _right);
+        DibujarTexto(g, "A cuenta", _f8, leftMargin, addSizeFont(_f8));
+        DibujarTexto(g, _ticketAbonoVO.TotalAbono.ToString("C2"), _f8, rightMargin, _y, _right);
 
-        if (_venta.Venta.EsVentaCredito)
-        {
-            DibujarTexto(g, "", _f8, leftMargin, addSizeFont(_f8));
-            DibujarTexto(g, "A cuenta", _f8, leftMargin, addSizeFont(_f8));
-            DibujarTexto(g, _venta.Venta.AbonoVenta.ToString("C0"), _f8, rightMargin, _y, _right);
-            DibujarTexto(g, "Saldo restante", _f8, leftMargin, addSizeFont(_f8));
-            DibujarTexto(g, _venta.Venta.PendientePago.ToString("C0"), _f8, rightMargin, _y, _right);
-        }
+        DibujarTexto(g, "", _f8, leftMargin, addSizeFont(_f8));
+        DibujarTexto(g, "Nuevo saldo", _f8, leftMargin, addSizeFont(_f8));
+        DibujarTexto(g, (_ticketAbonoVO.SaldoActual - _ticketAbonoVO.TotalAbono).ToString("C2"), _f8, rightMargin, _y, _right);
+
         DibujarTexto(g, "", _f8, leftMargin, addSizeFont(_f8));
         DibujarTexto(g, "Efectivo", _f8, leftMargin, addSizeFont(_f8));
-        DibujarTexto(g, _venta.CantidadRecibida.ToString("C0"), _f8, rightMargin, _y, _right);
+        DibujarTexto(g, _ticketAbonoVO.Efectivo.ToString("C2"), _f8, rightMargin, _y, _right);
         DibujarTexto(g, "Cambio", _f8, leftMargin, addSizeFont(_f8));
-        DibujarTexto(g, (_venta.CantidadRecibida - _venta.Venta.AbonoVenta).ToString("C0"), _f8, rightMargin, _y, _right);
+        DibujarTexto(g, (_ticketAbonoVO.Efectivo - _ticketAbonoVO.TotalAbono).ToString("C2"), _f8, rightMargin, _y, _right);
         // Pie de página
-        DibujarTexto(g, "¡Gracias por su compra!", _f8b, leftMargin, addSizeFont(_f8b));
+        DibujarTexto(g, "¡Gracias por su pago!", _f8b, leftMargin, addSizeFont(_f8b));
        
         // Guardar contenido del ticket
         _contenidoTicket.AppendLine(ObtenerContenidoTicket());

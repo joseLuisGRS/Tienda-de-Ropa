@@ -1,6 +1,5 @@
 ﻿using StoreRopa.Data.Repository.Interfeces;
 using StoreRopa.Models.Vo;
-using StoreRopa.Models;
 
 namespace StoreRopa.Data.Repository
 {
@@ -21,6 +20,7 @@ namespace StoreRopa.Data.Repository
         public IVentaRepository VentaRepository => new VentaRepository(_context);
         public IDetalleVentaRepository DetalleVentaRepository => new DetalleVentaRepository(_context);
         public ICreditosRepository CreditosRepository => new CreditosRepository(_context);
+        public IAbonosRepository AbonosRepository => new AbonosRepository(_context);
         public void Dispose()
         {
             if (_context != null)

@@ -23,5 +23,6 @@ namespace StoreRopa.Models
         [Required(ErrorMessage = "El {0} es obligatorio.")]
         public decimal PagoPendiente { get; set; }
 
+        public virtual ICollection<Abonos> Abonos { get; set; }
     }
 }

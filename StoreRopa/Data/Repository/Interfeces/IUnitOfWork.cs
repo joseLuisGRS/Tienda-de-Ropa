@@ -9,6 +9,7 @@
         IVentaRepository VentaRepository { get; }
         IDetalleVentaRepository DetalleVentaRepository { get; }
         ICreditosRepository CreditosRepository { get; }
+        IAbonosRepository AbonosRepository { get; }
         void SaveChanges();
         Task SaveChangesAsync();
     }
