@@ -6,6 +6,7 @@ using StoreRopa.Data.utils;
 using StoreRopa.Models;
 using StoreRopa.Models.Vo;
 using System.Data.SqlClient;
+using System.Security.Claims;
 
 namespace StoreRopa.Controllers
 {
@@ -79,6 +80,13 @@ namespace StoreRopa.Controllers
                             .RolIdB(Int32.Parse(empleado.Rol.Id.ToString()))
                             .IdPersonaB(Int32.Parse(empleado.PersonaId.ToString()))
                             .Builder();
+                             var claims = new List<Claim>
+                            {
+                                new Claim(ClaimTypes.Role, empleado.Rol.Nombre)
+                            };
+                            var user = await _userManager.FindByNameAsync(authVo.Usuario);
+                            await _userManager.AddClaimsAsync(user, claims);
+
                             return RedirectToAction("Index", "Home");
                         }
                     }

@@ -9,15 +9,180 @@
 }
 </head>
 <body>
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div class="row g-3">
+        <div class="col-md flex-column">
+            <div class="row g-2 alert-info text-center">
+                <h5 class="title text-black">Ventas</h5>
+                <div class="col-sm">
+                    <div class="row g-2 flex">
+                        <div class="col-6">
+                            <div class="row">
+                                <label class="col-form-label text-primary">Ventas</label>
+                            </div>
+                            <div class="row">
+                                <label class="col-form-label text-danger" id="lblVentas">0</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label class="col-form-label text-primary">Importe</label>
+                            </div>
+                            <div class="row">
+                                <label class="col-form-label text-danger" id="lblImporteVenta">$0.00</label>
+                        
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="col-sm">
+                    <h1 class="title text-black"><i class="bi bi-cart-check-fill"></i></h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md flex-column">
+            <div class="row g-2 alert-warning text-center">
+                <h5 class="title text-black">Abonos</h5>
+                <div class="col-sm">
+                    <div class="row g-2 flex">
+                        <div class="col-6">
+                            <div class="row">
+                                <label class="col-form-label text-black">Abonos</label>
+                            </div>
+                            <div class="row">
+                                <label class="col-form-label text-danger" id="lblAbonos">0</label>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label class="col-form-label text-black">Importe</label>
+                            </div>
+                            <div class="row">
+                                <label class="col-form-label text-danger" id="lblImporteAbonos">$0.00</label>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <h1 class="title text-black"><i class="bi bi-cash-coin"></i></h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md flex-column">
+            <div class="row g-2 alert-success text-center">
+                <h5 class="title text-black">Total</h5>
+                <div class="col-sm">
+                    <div class="row flex">
+                        <div class="col">
+                            <div class="row">
+                                <label class="col-form-label text-black">Importe</label>
+                            </div>
+                            <div class="row">
+                                <label class="col-form-label text-danger" id="lblImporteTotal">$0.00</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <h1 class="title text-black"><i class="bi bi-cash-coin"></i></h1>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - StoreRopa
+    <br />
+    <div class="row" id="divDatosGenerales">
+        <div class="col">
+            <div class="alert-secondary text-center">
+                <h1 class="title text-black">Datos Generales</h1>
+            </div>
         </div>
-    </footer>
+        <div class="row g-3">
+            <div class="col-md flex-column">
+                <div class="row g-2 alert-info text-center">
+                    <h5 class="title text-black">Ventas</h5>
+                    <div class="col-sm">
+                        <div class="row g-2 flex">
+                            <div class="col-6">
+                                <div class="row">
+                                    <label class="col-form-label text-primary">Ventas</label>
+                                </div>
+                                <div class="row">
+                                    <label class="col-form-label text-danger" id="lblVentasG">0</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <label class="col-form-label text-primary">Importe</label>
+                                </div>
+                                <div class="row">
+                                    <label class="col-form-label text-danger" id="lblImporteVentaG">$0.00</label>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <h1 class="title text-black"><i class="bi bi-cart-check-fill"></i></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md flex-column">
+                <div class="row g-2 alert-warning text-center">
+                    <h5 class="title text-black">Abonos</h5>
+                    <div class="col-sm">
+                        <div class="row g-2 flex">
+                            <div class="col-6">
+                                <div class="row">
+                                    <label class="col-form-label text-black">Abonos</label>
+                                </div>
+                                <div class="row">
+                                    <label class="col-form-label text-danger" id="lblAbonosG">0</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <label class="col-form-label text-black">Importe</label>
+                                </div>
+                                <div class="row">
+                                    <label class="col-form-label text-danger" id="lblImporteAbonosG">$0.00</label>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <h1 class="title text-black"><i class="bi bi-cash-coin"></i></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md flex-column">
+                <div class="row g-2 alert-success text-center">
+                    <h5 class="title text-black">Total</h5>
+                    <div class="col-sm">
+                        <div class="row flex">
+                            <div class="col">
+                                <div class="row">
+                                    <label class="col-form-label text-black">Importe</label>
+                                </div>
+                                <div class="row">
+                                    <label class="col-form-label text-danger" id="lblImporteTotalG">$0.00</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm">
+                        <h1 class="title text-black"><i class="bi bi-cash-coin"></i></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 </body>
 </html>
+
+@section scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/home/home.js"></script>
+}

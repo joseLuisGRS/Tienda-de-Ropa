@@ -10,5 +10,6 @@
         public static readonly string SUPER_ADMIN = "SuperAdmin";
         public static readonly string SUPER_ADMIN_CURP = "SUAU000101ABCDEF01";
         public static readonly string SUPER_ADMIN_PWDUNHASHED = "So9Ar1*c";
+        public static readonly string ADMININISTRADOR = "ADMINISTRADOR";
     }
 }
