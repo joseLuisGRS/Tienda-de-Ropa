@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using StoreRopa.Data.Repository.Interfeces;
 using StoreRopa.Data.utils;
 using StoreRopa.Models;
-using StoreRopa.Models.utils;
 using StoreRopa.Models.Vo;
 using System.Diagnostics;
-using System.Drawing.Printing;
-using System.Text.Json;
 
 namespace StoreRopa.Controllers
 {

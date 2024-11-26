@@ -166,7 +166,21 @@ namespace StoreRopa.Controllers
                                 .ToString("0.00"));
                             credito.UsuarioAlta = _user.Id.ToString();
                             await _unitOfWork.CreditosRepository.Create(credito);
+                            Abonos abono = new Abonos()
+                            {
+                                CreditoId = credito.Id,
+                                Credito = credito,
+                                Abono = detalleVentasVoList[i].abonoArticulo,
+                                UsuarioAlta = _user.Id.ToString()
+                            };
+                            await _unitOfWork.AbonosRepository.Create(abono);
                         }
+                    }
+                    if(client.TipoVenta == (int)TipoVenta.Credito)
+                    {
+                        client.Saldo = client.Saldo + (decimal)venta.Venta?.PendientePago;
+                        client.UsuarioModificacion = _user.Id.ToString();
+                        _unitOfWork.ClientesRepository.Update(client);
                     }
                     _unitOfWork.SaveChangesAsync().Wait();
                     _logger.LogInformation("Se realiza registro en BD de la Venta con id " + newVenta.Id);

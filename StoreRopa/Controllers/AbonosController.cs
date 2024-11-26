@@ -158,6 +158,10 @@ namespace StoreRopa.Controllers
                     ticketAbonoVO.TotalAbono = abonoVO.Abono;
                     ticketAbonoVO.SaldoActual = abonoVO.Saldo;
                     ticketAbonoVO.Efectivo = abonoVO.CantidadRecibida;
+
+                    client.Saldo = client.Saldo - abonoVO.Abono;
+                    client.UsuarioModificacion = _user.Id.ToString();
+                    _unitOfWork.ClientesRepository.Update(client);
                     _unitOfWork.SaveChangesAsync().Wait();
                     try
                     {
