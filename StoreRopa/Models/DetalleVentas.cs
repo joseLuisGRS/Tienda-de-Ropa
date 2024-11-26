@@ -49,6 +49,8 @@ namespace StoreRopa.Models
 
         public virtual ICollection<Creditos> Creditos { get; set; }
 
+        public virtual Devoluciones Devolucion { get; set; }
+
 
     }
 }

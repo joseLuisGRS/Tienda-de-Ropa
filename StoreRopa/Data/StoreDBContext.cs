@@ -20,6 +20,7 @@ namespace StoreRopa.Data
         public virtual DbSet<DetalleVentas> DetalleVentas { get; set; } = null!;
         public virtual DbSet<Creditos> Creditos { get; set; } = null!;
         public virtual DbSet<Abonos> Abonos { get; set; } = null!; 
+        public virtual DbSet<Devoluciones> Devoluciones { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +32,7 @@ namespace StoreRopa.Data
             modelBuilder.ApplyConfiguration(new DetalleVentasConfiguration());
             modelBuilder.ApplyConfiguration(new CreditosConfiguration());
             modelBuilder.ApplyConfiguration(new AbonoConfiguration());
+            modelBuilder.ApplyConfiguration(new DevolucionesConfiguration());
 
             OnModelCreatingPartial(modelBuilder);
         }

@@ -17,6 +17,7 @@ namespace StoreRopa.Models
         [Display(Name = "Tipo de venta")]
         public int? TipoVenta { get; set; }
         public virtual ICollection<Ventas> Ventas { get; set; }
+        public virtual ICollection<Devoluciones> Devoluciones { get; set; }
 
     }
 }
